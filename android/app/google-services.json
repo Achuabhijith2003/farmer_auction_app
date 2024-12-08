@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "657802178253",
+    "project_id": "fram-direct",
+    "storage_bucket": "fram-direct.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:657802178253:android:9c807c47038c3e86198384",
+        "android_client_info": {
+          "package_name": "com.farmdirect.farmstore"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCTJjWkJ6Y9C8JtKs1Cpx_gvymJVp3Vees"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

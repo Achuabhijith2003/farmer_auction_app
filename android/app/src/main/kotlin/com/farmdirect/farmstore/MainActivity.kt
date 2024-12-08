@@ -1,4 +1,4 @@
-package com.example.farmer_auction_app
+package com.farmdirect.farmstore
 
 import io.flutter.embedding.android.FlutterActivity
 
