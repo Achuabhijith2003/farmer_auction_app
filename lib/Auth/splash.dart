@@ -1,5 +1,5 @@
 import 'package:farmer_auction_app/Auth/loginpage.dart';
-import 'package:farmer_auction_app/Screens/home.dart';
+import 'package:farmer_auction_app/Screens/Buyer/Remasted_home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:another_flutter_splash_screen/another_flutter_splash_screen.dart';
@@ -23,7 +23,7 @@ class Splash extends StatelessWidget {
           gifWidth: 269,
           gifHeight: 474,
           nextScreen: (FirebaseAuth.instance.currentUser != null)
-              ? const Home()
+              ? const RemastedHome()
               : const Loginpage(),
           duration: const Duration(milliseconds: 3515),
           onInit: () async {
