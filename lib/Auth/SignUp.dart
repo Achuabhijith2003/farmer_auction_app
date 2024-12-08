@@ -169,13 +169,15 @@ class _SignUpState extends State<SignUp> {
     String name = namecontroller.text.trim();
     String address = addresscontroller.text.trim();
     String pincode = pincodecontroller.text.trim();
+    String phone_no = phonecontroller.text.trim();
 
     if (name.isEmpty ||
         email.isEmpty ||
         password.isEmpty ||
         repasword.isEmpty ||
         address.isEmpty ||
-        pincode.isEmpty) {
+        pincode.isEmpty ||
+        phone_no.isEmpty) {
       errormessage("All fields are required.");
       return;
     }
@@ -190,7 +192,7 @@ class _SignUpState extends State<SignUp> {
 
       if (userCredential.user != null) {
         String uid = userCredential.user!.uid;
-        createdatabase(uid, email, name, address, pincode);
+        createdatabase(uid, email, name, address, pincode, phone_no);
         Navigator.pushReplacement(context,
             MaterialPageRoute(builder: (context) => const Loginpage()));
       }
@@ -212,13 +214,14 @@ class _SignUpState extends State<SignUp> {
   }
 
   void createdatabase(String uid, String email, String name, String address,
-      String pincode) async {
+      String pincode, String Phone_no) async {
     Map<String, dynamic> newuserdata = {
       "UID": uid,
       "Name": name,
       "Email": email,
       "Address": address,
-      "Pincode": pincode
+      "Pincode": pincode,
+      "Phone no": Phone_no,
     };
     await FirebaseFirestore.instance
         .collection("User")
