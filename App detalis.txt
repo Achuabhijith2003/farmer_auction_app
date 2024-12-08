@@ -1,0 +1,49 @@
+Rural fam Hakathon
+
+Day 1-2: Set up Firebase and build authentication and basic UI.
+Day 3: Implement product listing and navigation features.
+Day 4: Add auction functionality and integrate the chatbot.
+Day 5: Finalize payment gateway and polish the UI.
+Day 6: Testing and debugging.
+Day 7: Prepare for the demo and pitch presentation.
+
+
+Features to Include
+
+Farmer Registration and Profile
+
+Secure login/signup using phone number or email.
+Profile with farm location, produce details, and history.
+
+Product Listing
+
+Farmers can list their produce (name, type, quantity, expected price, images).
+Option to set auction or fixed-price sales.
+
+Auction Mechanism
+
+Real-time bidding system for clients.
+Countdown timers for auctions.
+
+Negotiation Chatbot
+
+Chatbot interface to automate negotiation.
+Pre-set rules for minimum acceptable price.
+
+Navigation for Buyers and Farmers
+
+Integration with Google Maps for navigation to the farm or delivery point.
+
+Payment Gateway Integration
+
+Secure payment via Razorpay, Stripe, or Google Pay.
+Wallet system for small transactions.
+
+Terms and Conditions Enforcement
+
+Smart contract-like mechanism to confirm deals and ensure compliance.
+Generate PDFs or notifications for agreements.
+
+Admin Dashboard (Optional)
+
+Manage disputes, monitor activities, and ensure compliance.
