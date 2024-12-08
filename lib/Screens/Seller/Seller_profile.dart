@@ -1,17 +1,17 @@
 import 'package:farmer_auction_app/Auth/loginpage.dart';
-import 'package:farmer_auction_app/Screens/Seller/seller_remaster_home.dart';
+import 'package:farmer_auction_app/Screens/Buyer/Remasted_home.dart';
 import 'package:farmer_auction_app/Servies/firebase_servies.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class BuyerProfile extends StatefulWidget {
-  const BuyerProfile({super.key});
+class SellerProfile extends StatefulWidget {
+  const SellerProfile({super.key});
 
   @override
-  State<BuyerProfile> createState() => BuyerProfileState();
+  State<SellerProfile> createState() => _SellerProfileState();
 }
 
-class BuyerProfileState extends State<BuyerProfile> {
+class _SellerProfileState extends State<SellerProfile> {
   FirebaseServies auth = FirebaseServies();
   @override
   Widget build(BuildContext context) {
@@ -137,7 +137,7 @@ class BuyerProfileState extends State<BuyerProfile> {
                                     color: Colors.grey.shade400,
                                     child: ListTile(
                                       title: const Text(
-                                        "Swith to Seller",
+                                        "Swith to Buyer",
                                         style: TextStyle(color: Colors.white),
                                       ),
                                       trailing: const Icon(
@@ -150,7 +150,7 @@ class BuyerProfileState extends State<BuyerProfile> {
                                             context,
                                             MaterialPageRoute(
                                               builder: (context) =>
-                                                  const SellerRemasterHome(),
+                                                  const RemastedHome(),
                                             ));
                                       },
                                     )),
