@@ -3,13 +3,12 @@ import 'dart:developer';
 import 'package:animate_do/animate_do.dart';
 import 'package:farmer_auction_app/Auth/SignUp.dart';
 import 'package:farmer_auction_app/Auth/accountRecovery.dart';
-import 'package:farmer_auction_app/Screens/home.dart';
+import 'package:farmer_auction_app/Screens/Buyer/Remasted_home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
 
 class Loginpage extends StatefulWidget {
   const Loginpage({super.key});
@@ -44,7 +43,7 @@ class _LoginpageState extends State<Loginpage> {
         // init exiting hive chat
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const Home()),
+          MaterialPageRoute(builder: (context) => const RemastedHome()),
         );
       }
     } catch (error) {
@@ -356,7 +355,7 @@ class _LoginpageState extends State<Loginpage> {
           Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => const Home(),
+                builder: (context) => const RemastedHome(),
               ));
         }
       } on FirebaseAuthException catch (e) {
