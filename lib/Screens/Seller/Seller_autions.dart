@@ -1,3 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:farmer_auction_app/Screens/Seller/addaution.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -43,7 +46,85 @@ class _SellerAutionsState extends State<SellerAutions> {
                     topLeft: Radius.circular(40),
                     topRight: Radius.circular(40)),
               ),
+              child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Addaution()),
+                );
+              },
+              child: const Text("Create New Auction"),
+            ),
+            const SizedBox(height: 10),
+            const Text(
+              "Ongoing Auctions:",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            Expanded(
+              child: StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection('auctions')
+                    .where('sellerId', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  if (snapshot.hasError) {
+                    return Text("Error: ${snapshot.error}");
+                  }
+                  final auctions = snapshot.data?.docs ?? [];
+                  if (auctions.isEmpty) {
+                    return const Center(
+                      child: Text("You have no ongoing auctions."),
+                    );
+                  }
+                  return ListView.builder(
+                    itemCount: auctions.length,
+                    itemBuilder: (context, index) {
+                      final auction = auctions[index];
+                      return Card(
+                        child: ListTile(
+                          leading: Image.network(
+                            auction['imageUrl'],
+                            width: 60,
+                            height: 60,
+                            fit: BoxFit.cover,
+                          ),
+                          title: Text(auction['productName']),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("Current Highest: ₹${auction['highestBid']}"),
+                              Text("Bids: ${auction['totalBids']}"),
+                              Text(
+                                  "Ends In: ${auction['timeRemaining']} mins"),
+                            ],
+                          ),
+                          trailing: IconButton(
+                            icon: const Icon(Icons.delete),
+                            onPressed: () {
+                              // Delete Auction Logic
+                              deleteAuction(context, auction);
+                            },
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
+        )),
     ))],
     );
   }
+  
+  void deleteAuction(BuildContext context, QueryDocumentSnapshot<Object?> auction) {}
 }

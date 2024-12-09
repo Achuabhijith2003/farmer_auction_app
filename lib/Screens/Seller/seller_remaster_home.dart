@@ -50,7 +50,7 @@ class _SellerRemasterHomeState extends State<SellerRemasterHome> {
                   label: "Home"),
               BottomNavigationBarItem(
                   icon: Icon(
-                    Icons.home_outlined,
+                    Icons.groups_rounded,
                     // color: Color(
                     //     int.parse("#f5f3ef".substring(1, 7), radix: 16) +
                     //         0xFF000000),
@@ -58,7 +58,7 @@ class _SellerRemasterHomeState extends State<SellerRemasterHome> {
                   label: "Aution"),
               BottomNavigationBarItem(
                   icon: Icon(
-                    Icons.groups_rounded,
+                    Icons.add_circle_outline,
                     // color: Color(
                     //     int.parse("#f5f3ef".substring(1, 7), radix: 16) +
                     //         0xFF000000),

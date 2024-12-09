@@ -27,6 +27,7 @@ class AddproductsState extends State<Addproducts> {
 
   void _pickImages() async {
     final List<XFile> selectedImages = await _imagePicker.pickMultiImage();
+    // ignore: unnecessary_null_comparison
     if (selectedImages != null) {
       if (selectedImages.length > 4) {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
