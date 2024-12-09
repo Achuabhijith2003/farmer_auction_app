@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:farmer_auction_app/Servies/firebase_servies.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -10,6 +11,8 @@ class SellerHome extends StatefulWidget {
 }
 
 class _SellerHomeState extends State<SellerHome> {
+  Firebaseseller firebaseseller = Firebaseseller();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,7 +55,7 @@ class _SellerHomeState extends State<SellerHome> {
                     future: calculateTotalAmount(),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(child:  CircularProgressIndicator());
+                        return const Center(child: CircularProgressIndicator());
                       }
                       if (snapshot.hasError) {
                         return Text("Error: ${snapshot.error}");
@@ -83,7 +86,7 @@ class _SellerHomeState extends State<SellerHome> {
                   ),
                   Expanded(
                     child: StreamBuilder<QuerySnapshot>(
-                      stream: fetchProducts(),
+                      stream: firebaseseller.fetchsellerProducts(),
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
@@ -144,8 +147,4 @@ Future<double> calculateTotalAmount() async {
   }
 
   return totalAmount;
-}
-
-Stream<QuerySnapshot> fetchProducts() {
-  return FirebaseFirestore.instance.collection('products').snapshots();
 }

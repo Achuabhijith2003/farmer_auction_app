@@ -90,20 +90,20 @@ class _SellerAutionsState extends State<SellerAutions> {
                       final auction = auctions[index];
                       return Card(
                         child: ListTile(
-                          leading: Image.network(
-                            auction['imageUrl'],
-                            width: 60,
-                            height: 60,
-                            fit: BoxFit.cover,
-                          ),
+                          // leading: Image.network(
+                          //   auction['imageUrl'],
+                          //   width: 60,
+                          //   height: 60,
+                          //   fit: BoxFit.cover,
+                          // ),
                           title: Text(auction['productName']),
                           subtitle: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text("Current Highest: ₹${auction['highestBid']}"),
-                              Text("Bids: ${auction['totalBids']}"),
-                              Text(
-                                  "Ends In: ${auction['timeRemaining']} mins"),
+                              Text("Current Highest: ₹${auction['startingPrice']}"),
+                              // Text("Bids: ${auction['totalBids']}"),
+                              // Text(
+                              //     "Ends In: ${auction['endtime']} mins"),
                             ],
                           ),
                           trailing: IconButton(

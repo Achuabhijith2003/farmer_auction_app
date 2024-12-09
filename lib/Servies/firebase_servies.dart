@@ -42,9 +42,14 @@ class FirebaseauthServies {
   }
 }
 
-class Firebasebuyer {}
+class Firebasebuyer {
+  Stream<QuerySnapshot> fetchbuyerProducts() {
+    return FirebaseFirestore.instance.collection('products').snapshots();
+  }
+}
 
 class Firebaseseller extends FirebaseauthServies {
+  // add products
   Future<bool> addproducts(String productName, String productDescription,
       String Productcost, List<XFile> images) async {
     try {
@@ -76,7 +81,7 @@ class Firebaseseller extends FirebaseauthServies {
         "images": imageUrls,
         "timestamp": FieldValue.serverTimestamp(),
         "UID": getuserID(),
-        "sold":true
+        "sold": true
       });
 
       print("Product uploaded successfully!");
@@ -85,5 +90,13 @@ class Firebaseseller extends FirebaseauthServies {
       print("Error uploading product: $e");
       return false;
     }
+  }
+
+  // fetch the seller products
+  Stream<QuerySnapshot> fetchsellerProducts() {
+    return FirebaseFirestore.instance
+        .collection('products')
+        .where("UID", isEqualTo: getuserID())
+        .snapshots();
   }
 }

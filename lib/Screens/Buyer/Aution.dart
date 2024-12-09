@@ -44,76 +44,77 @@ class _AutionState extends State<Aution> {
                 borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(40),
                     topRight: Radius.circular(40)),
-              ),child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              "Ongoing Auctions:",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            Expanded(
-              child: StreamBuilder<QuerySnapshot>(
-                stream: FirebaseFirestore.instance
-                    .collection('auctions')
-                    .where('status', isEqualTo: 'ongoing')
-                    .snapshots(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  if (snapshot.hasError) {
-                    return Text("Error: ${snapshot.error}");
-                  }
-                  final auctions = snapshot.data?.docs ?? [];
-                  if (auctions.isEmpty) {
-                    return const Center(child: Text("No ongoing auctions."));
-                  }
-                  return ListView.builder(
-                    itemCount: auctions.length,
-                    itemBuilder: (context, index) {
-                      final auction = auctions[index];
-                      return Card(
-                        child: ListTile(
-                          leading: Image.network(
-                            auction['imageUrl'],
-                            width: 60,
-                            height: 60,
-                            fit: BoxFit.cover,
-                          ),
-                          title: Text(auction['productName']),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text("Starting Bid: ₹${auction['startingBid']}"),
-                              Text("Current Highest: ₹${auction['highestBid']}"),
-                              Text(
-                                  "Ends In: ${auction['timeRemaining']} mins"),
-                            ],
-                          ),
-                          trailing: ElevatedButton(
-                            onPressed: () {
-                              // Bid Placement Logic
-                              placeBid(context, auction);
-                            },
-                            child: const Text("Bid"),
-                          ),
-                        ),
-                      );
-                    },
-                  );
-                },
               ),
-            ),
-          ],
-        ),
-      ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "Ongoing Auctions:",
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                    Expanded(
+                      child: StreamBuilder<QuerySnapshot>(
+                        stream: FirebaseFirestore.instance
+                            .collection('auctions')
+                            .where('status', isEqualTo: 'ongoing')
+                            .snapshots(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          }
+                          if (snapshot.hasError) {
+                            return Text("Error: ${snapshot.error}");
+                          }
+                          final auctions = snapshot.data?.docs ?? [];
+                          if (auctions.isEmpty) {
+                            return const Center(
+                                child: Text("No ongoing auctions."));
+                          }
+                          return ListView.builder(
+                            itemCount: auctions.length,
+                            itemBuilder: (context, index) {
+                              final auction = auctions[index];
+                              return Card(
+                                child: ListTile(
+                                    // leading: Image.network(
+                                    //   auction['imageUrl'],
+                                    //   width: 60,
+                                    //   height: 60,
+                                    //   fit: BoxFit.cover,
+                                    // ),
+                                    title: Text(auction['productName']),
+                                    subtitle: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                            "Current Highest: ₹${auction['startingPrice']}"),
+                                        // Text("Bids: ${auction['totalBids']}"),
+                                        // Text(
+                                        //     "Ends In: ${auction['endtime']} mins"),
+                                      ],
+                                    ),
+                                    trailing: Text("${auction["status"]}")),
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ))
       ],
     );
   }
-    void placeBid(BuildContext context, DocumentSnapshot auction) {
+
+  void placeBid(BuildContext context, DocumentSnapshot auction) {
     // Implement bid placement dialog
   }
 }
