@@ -11,6 +11,7 @@ class SellerRemasterHome extends StatefulWidget {
 }
 
 class _SellerRemasterHomeState extends State<SellerRemasterHome> {
+  @override
   void initState() {
     super.initState();
   }

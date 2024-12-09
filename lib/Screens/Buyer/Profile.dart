@@ -12,7 +12,7 @@ class BuyerProfile extends StatefulWidget {
 }
 
 class BuyerProfileState extends State<BuyerProfile> {
-  FirebaseServies auth = FirebaseServies();
+  FirebaseauthServies auth = FirebaseauthServies();
   @override
   Widget build(BuildContext context) {
     return SafeArea(

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:farmer_auction_app/Screens/Componets/components.dart';
+import 'package:farmer_auction_app/Servies/firebase_servies.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
@@ -17,32 +18,32 @@ class AddproductsState extends State<Addproducts> {
   final TextEditingController productdescriptioncontroller =
       TextEditingController();
   final TextEditingController productcostcontroller = TextEditingController();
-  final List<File> _selectedImages = [];
+  List<XFile> _images = [];
   final ImagePicker _imagePicker = ImagePicker();
 
+  Firebaseseller fbseller = Firebaseseller();
+
   // Function to pick an image
-  Future<void> _pickImage() async {
-    if (_selectedImages.length >= 4) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('You can only select up to 4 images.')),
-      );
-      return;
-    }
 
-    final XFile? pickedFile =
-        await _imagePicker.pickImage(source: ImageSource.gallery);
-
-    if (pickedFile != null) {
-      setState(() {
-        _selectedImages.add(File(pickedFile.path));
-      });
+  void _pickImages() async {
+    final List<XFile> selectedImages = await _imagePicker.pickMultiImage();
+    if (selectedImages != null) {
+      if (selectedImages.length > 4) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("You can only select up to 4 images."),
+        ));
+      } else {
+        setState(() {
+          _images = selectedImages;
+        });
+      }
     }
   }
 
   // Function to remove an image
   void _removeImage(int index) {
     setState(() {
-      _selectedImages.removeAt(index);
+      _images.removeAt(index);
     });
   }
 
@@ -116,39 +117,54 @@ class AddproductsState extends State<Addproducts> {
                           const SizedBox(height: 10),
                           // Display selected images
                           Wrap(
-                            spacing: 8.0,
-                            runSpacing: 8.0,
-                            children: _selectedImages
-                                .asMap()
-                                .entries
-                                .map((entry) => Stack(
-                                      children: [
-                                        Image.file(
-                                          entry.value,
-                                          width: 100,
-                                          height: 100,
-                                          fit: BoxFit.cover,
-                                        ),
-                                        Positioned(
-                                          top: 0,
-                                          right: 0,
-                                          child: IconButton(
-                                            onPressed: () =>
-                                                _removeImage(entry.key),
-                                            icon: const Icon(
-                                              Icons.close,
-                                              color: Colors.red,
-                                            ),
+                            children: _images.map((image) {
+                              return Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: Stack(
+                                  children: [
+                                    // The image
+                                    Image.file(
+                                      File(image.path),
+                                      width: 80,
+                                      height: 80,
+                                      fit: BoxFit.cover,
+                                    ),
+                                    // The delete button
+                                    Positioned(
+                                      top: 0,
+                                      right: 0,
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            _images.remove(
+                                                image); // Remove the selected image
+                                          });
+                                        },
+                                        child: Container(
+                                          width: 24,
+                                          height: 24,
+                                          decoration: BoxDecoration(
+                                            color: Colors.red,
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: const Icon(
+                                            Icons.close,
+                                            color: Colors.white,
+                                            size: 16,
                                           ),
                                         ),
-                                      ],
-                                    ))
-                                .toList(),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }).toList(),
                           ),
+
                           const SizedBox(height: 10),
                           // Add Image Button
                           MaterialButton(
-                            onPressed: _pickImage,
+                            onPressed: _pickImages,
                             height: 50,
                             color: Colors.grey[900],
                             shape: RoundedRectangleBorder(
@@ -165,15 +181,43 @@ class AddproductsState extends State<Addproducts> {
                           ),
                           const SizedBox(height: 10),
                           MaterialButton(
-                            onPressed: () {
+                            onPressed: () async {
                               // Ensure at least 2 images are selected
-                              if (_selectedImages.length < 2) {
+                              if (_images.length < 2) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                       content: Text(
                                           'Please select at least 2 images for the product.')),
                                 );
-                                return;
+                              } else {
+                                String productName =
+                                    productnamecontroller.text.trim();
+                                String ProductDIscrption =
+                                    productdescriptioncontroller.text.trim();
+                                String ProductCost =
+                                    productcostcontroller.text.trim();
+                                final issucess = fbseller.addproducts(
+                                    productName,
+                                    ProductDIscrption,
+                                    ProductCost,
+                                    _images);
+                                if (await issucess) {
+                                  setState(() {
+                                    _images = [];
+                                    productcostcontroller.clear();
+                                    productdescriptioncontroller.clear();
+                                    productnamecontroller.clear();
+                                  });
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text('Uploaded sucesssfully')),
+                                  );
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text('Uploaded falied')),
+                                  );
+                                }
                               }
 
                               // Handle form submission
@@ -181,7 +225,7 @@ class AddproductsState extends State<Addproducts> {
                                   "Product Name: ${productnamecontroller.text}");
                               print(
                                   "Description: ${productdescriptioncontroller.text}");
-                              print("Images Count: ${_selectedImages.length}");
+                              print("Images Count: ${_images.length}");
                             },
                             height: 50,
                             color: Colors.grey[900],

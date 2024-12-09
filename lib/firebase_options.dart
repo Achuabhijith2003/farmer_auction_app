@@ -26,10 +26,7 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return macos;
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
@@ -49,28 +46,46 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions web = FirebaseOptions(
     apiKey: FireBase_web_key,
-    appId: '1:650479950400:web:0760600a9f013af5ec9da5',
-    messagingSenderId: '650479950400',
-    projectId: 'farm-direct-1b463',
-    authDomain: 'farm-direct-1b463.firebaseapp.com',
-    storageBucket: 'farm-direct-1b463.firebasestorage.app',
-    measurementId: 'G-1WH04Y4HYH',
+    appId: '1:997923228224:web:efb821b9c0cbe0ff082da5',
+    messagingSenderId: '997923228224',
+    projectId: 'fir-77bb7',
+    authDomain: 'fir-77bb7.firebaseapp.com',
+    databaseURL: 'https://fir-77bb7-default-rtdb.firebaseio.com',
+    storageBucket: 'fir-77bb7.appspot.com',
+    measurementId: 'G-QM28FNJY5S',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: FireBase_android_key,
-    appId: '1:650479950400:android:b2ee3e672bbdb998ec9da5',
-    messagingSenderId: '650479950400',
-    projectId: 'farm-direct-1b463',
-    storageBucket: 'farm-direct-1b463.firebasestorage.app',
+    appId: '1:997923228224:android:df26cde827d33286082da5',
+    messagingSenderId: '997923228224',
+    projectId: 'fir-77bb7',
+    databaseURL: 'https://fir-77bb7-default-rtdb.firebaseio.com',
+    storageBucket: 'fir-77bb7.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: FireBase_ios_key,
-    appId: '1:650479950400:ios:1f0962eb449bdc52ec9da5',
-    messagingSenderId: '650479950400',
-    projectId: 'farm-direct-1b463',
-    storageBucket: 'farm-direct-1b463.firebasestorage.app',
+    appId: '1:997923228224:ios:9c492ab9bb6f290e082da5',
+    messagingSenderId: '997923228224',
+    projectId: 'fir-77bb7',
+    databaseURL: 'https://fir-77bb7-default-rtdb.firebaseio.com',
+    storageBucket: 'fir-77bb7.appspot.com',
+    androidClientId: '997923228224-69fvve4iode08t69ft1faqovks3kqreg.apps.googleusercontent.com',
+    iosClientId: '997923228224-s46gj3h7f805mi1fl17kq613qkl97bhr.apps.googleusercontent.com',
     iosBundleId: 'com.farmdirect.farmstore',
   );
+
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: Firebase_macos_key,
+    appId: '1:997923228224:ios:178bf05121e6ff75082da5',
+    messagingSenderId: '997923228224',
+    projectId: 'fir-77bb7',
+    databaseURL: 'https://fir-77bb7-default-rtdb.firebaseio.com',
+    storageBucket: 'fir-77bb7.appspot.com',
+    androidClientId: '997923228224-69fvve4iode08t69ft1faqovks3kqreg.apps.googleusercontent.com',
+    iosClientId: '997923228224-sacq635su9iuoctail5e6vh4vmapcbev.apps.googleusercontent.com',
+    iosBundleId: 'com.example.farmerAuctionApp',
+  );
+
 }
