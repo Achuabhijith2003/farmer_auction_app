@@ -1,3 +1,4 @@
+import 'package:farmer_auction_app/Screens/Seller/Seller_autions.dart';
 import 'package:farmer_auction_app/Screens/Seller/Seller_home.dart';
 import 'package:farmer_auction_app/Screens/Seller/Seller_profile.dart';
 import 'package:farmer_auction_app/Screens/Seller/add_products.dart';
@@ -17,7 +18,12 @@ class _SellerRemasterHomeState extends State<SellerRemasterHome> {
   }
 
   int _cureentindex = 0;
-  List<Widget> body = const [SellerHome(), Addproducts(), SellerProfile()];
+  List<Widget> body = const [
+    SellerHome(),
+    SellerAutions(),
+    Addproducts(),
+    SellerProfile()
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,6 +48,14 @@ class _SellerRemasterHomeState extends State<SellerRemasterHome> {
                     //         0xFF000000),
                   ),
                   label: "Home"),
+              BottomNavigationBarItem(
+                  icon: Icon(
+                    Icons.home_outlined,
+                    // color: Color(
+                    //     int.parse("#f5f3ef".substring(1, 7), radix: 16) +
+                    //         0xFF000000),
+                  ),
+                  label: "Aution"),
               BottomNavigationBarItem(
                   icon: Icon(
                     Icons.groups_rounded,

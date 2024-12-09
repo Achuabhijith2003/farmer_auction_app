@@ -190,6 +190,11 @@ class AddproductsState extends State<Addproducts> {
                                           'Please select at least 2 images for the product.')),
                                 );
                               } else {
+                                      const Center(
+                          child: CircularProgressIndicator(
+                            color: Colors.grey,
+                          ),
+                        ); 
                                 String productName =
                                     productnamecontroller.text.trim();
                                 String ProductDIscrption =

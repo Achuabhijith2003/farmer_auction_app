@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class SellerHome extends StatefulWidget {
   const SellerHome({super.key});
@@ -12,80 +13,120 @@ class _SellerHomeState extends State<SellerHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Dashboard"),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+      body: Stack(children: [
+        Column(
           children: [
-            FutureBuilder<double>(
-              future: calculateTotalAmount(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const CircularProgressIndicator();
-                }
-                if (snapshot.hasError) {
-                  return Text("Error: ${snapshot.error}");
-                }
-                return Text(
-                  "Total Amount Earned: ₹${snapshot.data}",
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+            Padding(
+              padding: const EdgeInsets.only(top: 36, left: 5, right: 5),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  const SizedBox(width: 10),
+                  Text(
+                    "Dashboard",
+                    style: GoogleFonts.dmSerifDisplay(
+                        fontSize: 40, letterSpacing: 4),
+                    textAlign: TextAlign.center,
                   ),
-                );
-              },
-            ),
-            const SizedBox(height: 20),
-            const Text(
-              "All Products:",
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            Expanded(
-              child: StreamBuilder<QuerySnapshot>(
-                stream: fetchProducts(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  if (snapshot.hasError) {
-                    return Text("Error: ${snapshot.error}");
-                  }
-                  final products = snapshot.data?.docs ?? [];
-                  if (products.isEmpty) {
-                    return const Center(child: Text("No products uploaded."));
-                  }
-                  return ListView.builder(
-                    itemCount: products.length,
-                    itemBuilder: (context, index) {
-                      final product = products[index];
-                      return Card(
-                        child: ListTile(
-                          title: Text(product['name']),
-                          subtitle: Text("Price: ₹${product['Cost']}"),
-                          // trailing: Text(
-                          //   product['sold'] ? "Sold" : "Available",
-                          //   style: TextStyle(
-                          //     color:
-                          //         product['sold'] ? Colors.green : Colors.red,
-                          //     fontWeight: FontWeight.bold,
-                          //   ),
-                          // ),
-                        ),
-                      );
-                    },
-                  );
-                },
+                ],
               ),
             ),
           ],
         ),
-      ),
+        Positioned(
+            top: 100,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 15),
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(40),
+                    topRight: Radius.circular(40)),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  FutureBuilder<double>(
+                    future: calculateTotalAmount(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child:  CircularProgressIndicator());
+                      }
+                      if (snapshot.hasError) {
+                        return Text("Error: ${snapshot.error}");
+                      }
+                      return Center(
+                        child: Card(
+                          child: Text(
+                            "Total Amount Earned: ₹${snapshot.data}",
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 20),
+                  Row(
+                    children: [
+                      Text(
+                        "All Products",
+                        style: GoogleFonts.dmSerifDisplay(
+                            fontSize: 27, letterSpacing: 4),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                  Expanded(
+                    child: StreamBuilder<QuerySnapshot>(
+                      stream: fetchProducts(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        }
+                        if (snapshot.hasError) {
+                          return Text("Error: ${snapshot.error}");
+                        }
+                        final products = snapshot.data?.docs ?? [];
+                        if (products.isEmpty) {
+                          return const Center(
+                              child: Text("No products uploaded."));
+                        } else {
+                          return ListView.builder(
+                            itemCount: products.length,
+                            itemBuilder: (context, index) {
+                              final product = products[index];
+                              return Card(
+                                child: ListTile(
+                                  title: Text(product['name']),
+                                  subtitle: Text("Price: ₹${product['Cost']}"),
+                                  trailing: Text(
+                                    product['sold'] ? "Available" : "sold",
+                                    style: TextStyle(
+                                      color: product['sold']
+                                          ? Colors.green
+                                          : Colors.red,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        }
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ))
+      ]),
     );
   }
 }

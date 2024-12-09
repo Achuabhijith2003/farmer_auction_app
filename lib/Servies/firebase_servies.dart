@@ -75,7 +75,8 @@ class Firebaseseller extends FirebaseauthServies {
         "Cost": Productcost,
         "images": imageUrls,
         "timestamp": FieldValue.serverTimestamp(),
-        "UID": getuserID()
+        "UID": getuserID(),
+        "sold":true
       });
 
       print("Product uploaded successfully!");
