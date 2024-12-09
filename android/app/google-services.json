@@ -1,26 +1,44 @@
 {
   "project_info": {
-    "project_number": "657802178253",
-    "project_id": "fram-direct",
-    "storage_bucket": "fram-direct.firebasestorage.app"
+    "project_number": "997923228224",
+    "firebase_url": "https://fir-77bb7-default-rtdb.firebaseio.com",
+    "project_id": "fir-77bb7",
+    "storage_bucket": "fir-77bb7.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:657802178253:android:9c807c47038c3e86198384",
+        "mobilesdk_app_id": "1:997923228224:android:df26cde827d33286082da5",
         "android_client_info": {
           "package_name": "com.farmdirect.farmstore"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "997923228224-a8agmrm36bastlvmi5bt96kjkfom22ri.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyCTJjWkJ6Y9C8JtKs1Cpx_gvymJVp3Vees"
+          "current_key": "AIzaSyByo4NxIV_8__-oraIs18T1VROH6TFvZsI"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "997923228224-a8agmrm36bastlvmi5bt96kjkfom22ri.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "997923228224-3pmhuc8d9s1627k0sbi0a1a012757vje.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.firebasesample"
+              }
+            }
+          ]
         }
       }
     }
