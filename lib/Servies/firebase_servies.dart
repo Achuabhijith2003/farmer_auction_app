@@ -42,12 +42,20 @@ class FirebaseauthServies {
   }
 }
 
+
+// Firebase servies  for buyers
 class Firebasebuyer {
   Stream<QuerySnapshot> fetchbuyerProducts() {
     return FirebaseFirestore.instance.collection('products').snapshots();
   }
+
+  Stream<DocumentSnapshot<Map<String, dynamic>>> fetchautiondetails(String docID) {
+  return FirebaseFirestore.instance.collection('auctions').doc(docID).snapshots();
 }
 
+}
+
+// Firebase servies for seller
 class Firebaseseller extends FirebaseauthServies {
   // add products
   Future<bool> addproducts(String productName, String productDescription,

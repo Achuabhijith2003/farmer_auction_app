@@ -106,7 +106,7 @@ class _AutionState extends State<Aution> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) =>
-                                            const BiddingPlatform(),
+                                            BiddingPlatform( docID: auction["docID"],),
                                       )),
                                 ),
                               );
