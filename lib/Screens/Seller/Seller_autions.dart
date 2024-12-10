@@ -59,7 +59,7 @@ class _SellerAutionsState extends State<SellerAutions> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => Addaution()),
+                                builder: (context) => const AddAuction()),
                           );
                         },
                         child: const Text("Create New Auction"),

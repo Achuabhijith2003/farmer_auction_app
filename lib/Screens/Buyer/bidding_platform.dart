@@ -15,7 +15,7 @@ class BiddingPlatform extends StatefulWidget {
 class _BiddingPlatformState extends State<BiddingPlatform> {
   Firebasebuyer buyyerservies = Firebasebuyer();
   final TextEditingController bidController = TextEditingController();
-  double highestbidamount = 0.0;
+  double highestBidAmount = 0.0;
 
   void placeBid(String auctionId, double currentPrice) async {
     double bidAmount = double.tryParse(bidController.text) ?? 0.0;
@@ -92,6 +92,7 @@ class _BiddingPlatformState extends State<BiddingPlatform> {
               final currentPrice = auction['currentPrice'];
               final startingPrice = auction['startingPrice'];
               final endTime = (auction['endTime'] as Timestamp).toDate();
+              final imageUrls = List<String>.from(auction['images'] ?? []);
 
               return Card(
                 margin: const EdgeInsets.all(8.0),
@@ -100,6 +101,29 @@ class _BiddingPlatformState extends State<BiddingPlatform> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      // Display the product image
+                      if (imageUrls.isNotEmpty)
+                        SizedBox(
+                          height: 200,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: imageUrls.length,
+                            itemBuilder: (context, index) {
+                              return Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Image.network(
+                                  imageUrls[index],
+                                  fit: BoxFit.cover,
+                                  height: 200,
+                                  width: 200,
+                                ),
+                              );
+                            },
+                          ),
+                        )
+                      else
+                        const Text('No images available'),
+                      const SizedBox(height: 10),
                       Text(
                         productName,
                         style: GoogleFonts.dmSerifDisplay(
@@ -155,7 +179,6 @@ class _BiddingPlatformState extends State<BiddingPlatform> {
               final uid = highestBidDoc['UID'];
               final bidAmount = highestBidDoc['bid'];
 
-              // Use FutureBuilder to fetch user details
               return FutureBuilder<Map<String, dynamic>?>(
                 future: buyyerservies.fetchUserDetails(uid),
                 builder: (context, userSnapshot) {
@@ -173,26 +196,14 @@ class _BiddingPlatformState extends State<BiddingPlatform> {
                   }
 
                   final user = userSnapshot.data!;
-                  final name =
-                      user['Name'] ?? 'N/A'; // Replace with actual field names
-                  // final email =
-                  //     user['email'] ?? 'N/A'; // Replace with actual field names
-                  // final age =
-                  //     user['age'] ?? 'N/A'; // Replace with actual field names
+                  final name = user['Name'] ?? 'N/A';
 
                   return Card(
                     margin: const EdgeInsets.all(8.0),
                     shape: Border.all(color: Colors.greenAccent),
                     child: ListTile(
                       title: Text('Highest Bidder: $name'),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Bid Amount: \$${bidAmount.toStringAsFixed(2)}'),
-                          // Text('Email: $email'),
-                          // Text('Age: $age'),
-                        ],
-                      ),
+                      subtitle: Text('Bid Amount: \$${bidAmount.toStringAsFixed(2)}'),
                     ),
                   );
                 },
@@ -227,7 +238,6 @@ class _BiddingPlatformState extends State<BiddingPlatform> {
                     final uid = bid['UID'];
                     final bidAmount = bid['bid'];
 
-                    // Use FutureBuilder to fetch user details
                     return FutureBuilder<Map<String, dynamic>?>(
                       future: buyyerservies.fetchUserDetails(uid),
                       builder: (context, userSnapshot) {
@@ -249,16 +259,11 @@ class _BiddingPlatformState extends State<BiddingPlatform> {
                         }
 
                         final user = userSnapshot.data!;
-                        final name = user['Name'] ??
-                            'N/A'; // Replace with actual field names
-                        // final email =
-                        //     user['email'] ?? 'N/A'; // Replace with actual field names
-                        // final age =
-                        //     user['age'] ?? 'N/A'; // Replace with actual field names
+                        final name = user['Name'] ?? 'N/A';
 
                         return Card(
                           child: ListTile(
-                            title: Text('User: $name'),
+                            title: Text('Bidder: $name'),
                             subtitle:
                                 Text('Bid Amount: \$${bidAmount.toString()}'),
                           ),
