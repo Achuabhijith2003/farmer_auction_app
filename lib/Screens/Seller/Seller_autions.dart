@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:farmer_auction_app/Screens/Seller/Autiondetials.dart';
 import 'package:farmer_auction_app/Screens/Seller/addaution.dart';
 import 'package:farmer_auction_app/Servies/firebase_servies.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -99,6 +100,13 @@ class _SellerAutionsState extends State<SellerAutions> {
                                 final auction = auctions[index];
                                 return Card(
                                   child: ListTile(
+                                     onTap: () => Navigator.push(
+                                      // ignore: use_build_context_synchronously
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            Autiondetials(docID: auction["docID"])
+                                      )),
                                     // leading: Image.network(
                                     //   auction['imageUrl'],
                                     //   width: 60,
