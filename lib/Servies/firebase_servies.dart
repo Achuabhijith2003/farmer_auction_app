@@ -74,25 +74,25 @@ class Firebasebuyer extends FirebaseauthServies {
         .orderBy('bid', descending: true)
         .snapshots();
   }
- Future<Map<String, dynamic>?> fetchUserDetails(String docId) async {
-  try {
-    // Access Firestore and the specific user's document
-    final firestore = FirebaseFirestore.instance;
-    final docSnapshot = await firestore.collection('User').doc(docId).get();
 
-    if (docSnapshot.exists) {
-      // Return the user data as a Map
-      return docSnapshot.data();
-    } else {
-      print('User document not found.');
+  Future<Map<String, dynamic>?> fetchUserDetails(String docId) async {
+    try {
+      // Access Firestore and the specific user's document
+      final firestore = FirebaseFirestore.instance;
+      final docSnapshot = await firestore.collection('User').doc(docId).get();
+
+      if (docSnapshot.exists) {
+        // Return the user data as a Map
+        return docSnapshot.data();
+      } else {
+        print('User document not found.');
+        return null;
+      }
+    } catch (e) {
+      print('Error fetching user details: $e');
       return null;
     }
-  } catch (e) {
-    print('Error fetching user details: $e');
-    return null;
   }
-}
-
 }
 
 // Firebase servies for seller
@@ -135,7 +135,8 @@ class Firebaseseller extends FirebaseauthServies {
       final docid = ref.id;
       await FirebaseFirestore.instance
           .collection("products")
-          .add({"docID": docid});
+          .doc(docid)
+          .update({"docID": docid});
 
       print("Product uploaded successfully!");
       return true;

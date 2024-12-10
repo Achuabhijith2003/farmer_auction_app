@@ -119,7 +119,7 @@ class _SellerAutionsState extends State<SellerAutions> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                            "Current Highest: ₹${auction['startingPrice']}"),
+                                            "Current Highest: ₹${auction['currentPrice']}"),
                                         // Text("Bids: ${auction['totalBids']}"),
                                         // Text(
                                         //     "Ends In: ${auction['endtime']} mins"),
