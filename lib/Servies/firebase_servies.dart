@@ -42,15 +42,55 @@ class FirebaseauthServies {
   }
 }
 
-
 // Firebase servies  for buyers
-class Firebasebuyer {
+class Firebasebuyer extends FirebaseauthServies {
   Stream<QuerySnapshot> fetchbuyerProducts() {
     return FirebaseFirestore.instance.collection('products').snapshots();
   }
 
-  Stream<DocumentSnapshot<Map<String, dynamic>>> fetchautiondetails(String docID) {
-  return FirebaseFirestore.instance.collection('auctions').doc(docID).snapshots();
+  Stream<DocumentSnapshot<Map<String, dynamic>>> fetchautiondetails(
+      String docID) {
+    return FirebaseFirestore.instance
+        .collection('auctions')
+        .doc(docID)
+        .snapshots();
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> fetchHighestBid(String docID) {
+    return FirebaseFirestore.instance
+        .collection('auctions')
+        .doc(docID)
+        .collection('bids')
+        .orderBy('bid', descending: true)
+        .limit(1)
+        .snapshots();
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> fetchbids(String docID) {
+    return FirebaseFirestore.instance
+        .collection('auctions')
+        .doc(docID)
+        .collection("bids")
+        .orderBy('bid', descending: true)
+        .snapshots();
+  }
+ Future<Map<String, dynamic>?> fetchUserDetails(String docId) async {
+  try {
+    // Access Firestore and the specific user's document
+    final firestore = FirebaseFirestore.instance;
+    final docSnapshot = await firestore.collection('User').doc(docId).get();
+
+    if (docSnapshot.exists) {
+      // Return the user data as a Map
+      return docSnapshot.data();
+    } else {
+      print('User document not found.');
+      return null;
+    }
+  } catch (e) {
+    print('Error fetching user details: $e');
+    return null;
+  }
 }
 
 }
@@ -93,9 +133,9 @@ class Firebaseseller extends FirebaseauthServies {
       });
 
       final docid = ref.id;
-      await FirebaseFirestore.instance.collection("products").add({
-        "docID":docid
-      });
+      await FirebaseFirestore.instance
+          .collection("products")
+          .add({"docID": docid});
 
       print("Product uploaded successfully!");
       return true;
@@ -113,7 +153,7 @@ class Firebaseseller extends FirebaseauthServies {
         .snapshots();
   }
 
-    Future<bool> deletesellerAuction(String docId) async {
+  Future<bool> deletesellerAuction(String docId) async {
     try {
       final docRef =
           FirebaseFirestore.instance.collection('auctions').doc(docId);
@@ -126,7 +166,7 @@ class Firebaseseller extends FirebaseauthServies {
     }
   }
 
-      Future<bool> deletesellerProducts(String docId) async {
+  Future<bool> deletesellerProducts(String docId) async {
     try {
       final docRef =
           FirebaseFirestore.instance.collection('products').doc(docId);
@@ -138,5 +178,4 @@ class Firebaseseller extends FirebaseauthServies {
       return false; // Deletion failed
     }
   }
-
 }

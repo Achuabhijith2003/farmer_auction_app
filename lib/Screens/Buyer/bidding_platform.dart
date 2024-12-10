@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class BiddingPlatform extends StatefulWidget {
-  final dynamic docID;
+  final String docID;
 
   const BiddingPlatform({super.key, required this.docID});
 
@@ -15,6 +15,7 @@ class BiddingPlatform extends StatefulWidget {
 class _BiddingPlatformState extends State<BiddingPlatform> {
   Firebasebuyer buyyerservies = Firebasebuyer();
   final TextEditingController bidController = TextEditingController();
+  double highestbidamount = 0.0;
 
   void placeBid(String auctionId, double currentPrice) async {
     double bidAmount = double.tryParse(bidController.text) ?? 0.0;
@@ -22,7 +23,8 @@ class _BiddingPlatformState extends State<BiddingPlatform> {
     if (bidAmount <= currentPrice) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-            content: Text('Bid must be higher than the current price.')),
+          content: Text('Bid must be higher than the current price.'),
+        ),
       );
       return;
     }
@@ -33,6 +35,15 @@ class _BiddingPlatformState extends State<BiddingPlatform> {
           .doc(auctionId)
           .update({
         'currentPrice': bidAmount,
+      });
+
+      await FirebaseFirestore.instance
+          .collection('auctions')
+          .doc(auctionId)
+          .collection('bids')
+          .add({
+        'bid': bidAmount,
+        'UID': buyyerservies.getuserID(),
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -49,92 +60,218 @@ class _BiddingPlatformState extends State<BiddingPlatform> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          title: Text(
-            'Bidding Platform',
-            style: GoogleFonts.dmSerifDisplay(fontSize: 24),
-          ),
-          backgroundColor: Colors.green,
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text(
+          'Bidding Platform',
+          style: GoogleFonts.dmSerifDisplay(fontSize: 24),
         ),
-        body: StreamBuilder<DocumentSnapshot>(
-          stream: buyyerservies.fetchautiondetails(widget.docID),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            }
+        backgroundColor: Colors.green,
+      ),
+      body: Column(
+        children: [
+          // Auction details
+          StreamBuilder<DocumentSnapshot>(
+            stream: buyyerservies.fetchautiondetails(widget.docID),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
 
-            if (!snapshot.hasData || !snapshot.data!.exists) {
-              return const Center(
-                child: Text(
-                  'Auction not found.',
-                  style: TextStyle(fontSize: 18, color: Colors.black),
+              if (!snapshot.hasData || !snapshot.data!.exists) {
+                return const Center(
+                  child: Text(
+                    'Auction not found.',
+                    style: TextStyle(fontSize: 18, color: Colors.black),
+                  ),
+                );
+              }
+
+              final auction = snapshot.data!;
+              final productName = auction['productName'];
+              final currentPrice = auction['currentPrice'];
+              final startingPrice = auction['startingPrice'];
+              final endTime = (auction['endTime'] as Timestamp).toDate();
+
+              return Card(
+                margin: const EdgeInsets.all(8.0),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        productName,
+                        style: GoogleFonts.dmSerifDisplay(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                          'Starting Price: \$${startingPrice.toStringAsFixed(2)}'),
+                      Text(
+                          'Current Price: \$${currentPrice.toStringAsFixed(2)}'),
+                      Text('End Time: ${endTime.toLocal()}'),
+                      const SizedBox(height: 10),
+                      TextField(
+                        controller: bidController,
+                        decoration: const InputDecoration(
+                          labelText: 'Enter your bid',
+                          border: OutlineInputBorder(),
+                        ),
+                        keyboardType: TextInputType.number,
+                      ),
+                      const SizedBox(height: 10),
+                      ElevatedButton(
+                        onPressed: () => placeBid(widget.docID, currentPrice),
+                        child: const Text('Place Bid'),
+                      ),
+                    ],
+                  ),
                 ),
               );
-            }
+            },
+          ),
 
-            final auction = snapshot.data!;
-            final productName = auction['productName'];
-            final currentPrice = auction['currentPrice'];
-            final startingPrice = auction['startingPrice'];
-            final endTime = (auction['endTime'] as Timestamp).toDate();
+          // Highest bid
+          StreamBuilder<QuerySnapshot>(
+            stream: buyyerservies.fetchHighestBid(widget.docID),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
 
-            return Card(
-              margin: const EdgeInsets.all(8.0),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              elevation: 4,
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      productName,
-                      style: GoogleFonts.dmSerifDisplay(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
+              if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                return const Center(
+                  child: Text(
+                    'No bids available.',
+                    style: TextStyle(fontSize: 18, color: Colors.black),
+                  ),
+                );
+              }
+
+              final highestBidDoc = snapshot.data!.docs.first;
+              final uid = highestBidDoc['UID'];
+              final bidAmount = highestBidDoc['bid'];
+
+              // Use FutureBuilder to fetch user details
+              return FutureBuilder<Map<String, dynamic>?>(
+                future: buyyerservies.fetchUserDetails(uid),
+                builder: (context, userSnapshot) {
+                  if (userSnapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (!userSnapshot.hasData || userSnapshot.data == null) {
+                    return const Center(
+                      child: Text(
+                        'User details not found.',
+                        style: TextStyle(fontSize: 18, color: Colors.black),
+                      ),
+                    );
+                  }
+
+                  final user = userSnapshot.data!;
+                  final name =
+                      user['Name'] ?? 'N/A'; // Replace with actual field names
+                  // final email =
+                  //     user['email'] ?? 'N/A'; // Replace with actual field names
+                  // final age =
+                  //     user['age'] ?? 'N/A'; // Replace with actual field names
+
+                  return Card(
+                    margin: const EdgeInsets.all(8.0),
+                    shape: Border.all(color: Colors.greenAccent),
+                    child: ListTile(
+                      title: Text('Highest Bidder: $name'),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Bid Amount: \$${bidAmount.toStringAsFixed(2)}'),
+                          // Text('Email: $email'),
+                          // Text('Age: $age'),
+                        ],
                       ),
                     ),
-                    const SizedBox(height: 10),
-                    Text(
-                      'Starting Price: \$${startingPrice.toStringAsFixed(2)}',
-                      style: const TextStyle(fontSize: 16),
+                  );
+                },
+              );
+            },
+          ),
+
+          // All bids
+          Expanded(
+            child: StreamBuilder<QuerySnapshot>(
+              stream: buyyerservies.fetchbids(widget.docID),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                  return const Center(
+                    child: Text(
+                      'No bids found.',
+                      style: TextStyle(fontSize: 18, color: Colors.black),
                     ),
-                    Text(
-                      'Current Price: \$${currentPrice.toStringAsFixed(2)}',
-                      style: const TextStyle(
-                        fontSize: 16,
-                        color: Colors.green,
-                      ),
-                    ),
-                    Text(
-                      'End Time: ${endTime.toLocal()}',
-                      style: const TextStyle(fontSize: 14, color: Colors.grey),
-                    ),
-                    const SizedBox(height: 10),
-                    TextField(
-                      controller: bidController,
-                      decoration: const InputDecoration(
-                        labelText: 'Enter your bid',
-                        border: OutlineInputBorder(),
-                      ),
-                      keyboardType: TextInputType.number,
-                    ),
-                    const SizedBox(height: 10),
-                    ElevatedButton(
-                      onPressed: () => placeBid(widget.docID, currentPrice),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
-                      ),
-                      child: const Text('Place Bid'),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        ));
+                  );
+                }
+
+                final bids = snapshot.data!.docs;
+
+                return ListView.builder(
+                  itemCount: bids.length,
+                  itemBuilder: (context, index) {
+                    final bid = bids[index];
+                    final uid = bid['UID'];
+                    final bidAmount = bid['bid'];
+
+                    // Use FutureBuilder to fetch user details
+                    return FutureBuilder<Map<String, dynamic>?>(
+                      future: buyyerservies.fetchUserDetails(uid),
+                      builder: (context, userSnapshot) {
+                        if (userSnapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        }
+
+                        if (!userSnapshot.hasData ||
+                            userSnapshot.data == null) {
+                          return const Center(
+                            child: Text(
+                              'User details not found.',
+                              style:
+                                  TextStyle(fontSize: 18, color: Colors.black),
+                            ),
+                          );
+                        }
+
+                        final user = userSnapshot.data!;
+                        final name = user['Name'] ??
+                            'N/A'; // Replace with actual field names
+                        // final email =
+                        //     user['email'] ?? 'N/A'; // Replace with actual field names
+                        // final age =
+                        //     user['age'] ?? 'N/A'; // Replace with actual field names
+
+                        return Card(
+                          child: ListTile(
+                            title: Text('User: $name'),
+                            subtitle:
+                                Text('Bid Amount: \$${bidAmount.toString()}'),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
