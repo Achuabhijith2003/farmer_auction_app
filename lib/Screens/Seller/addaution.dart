@@ -32,15 +32,22 @@ class _AddautionState extends State<Addaution> {
 
     // Add auction details to Firestore
     try {
-      await FirebaseFirestore.instance.collection('auctions').add({
+      final ref = await FirebaseFirestore.instance.collection('auctions').add({
         'productName': productName,
         'startingPrice': startingPrice,
         'currentPrice': startingPrice,
         'endTime': endTime,
         'sellerId': sellerbase.getuserID(), // Replace with actual seller ID
         'createdAt': DateTime.now(),
-        'status':"ongoing"
+        'status': "ongoing"
       });
+
+      final docid = ref.id;
+
+      await FirebaseFirestore.instance
+          .collection("auctions")
+          .doc(docid)
+          .update({"docID": docid});
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Auction created successfully!')),

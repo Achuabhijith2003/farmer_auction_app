@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:farmer_auction_app/Screens/Buyer/bidding_platform.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -81,25 +82,33 @@ class _AutionState extends State<Aution> {
                               final auction = auctions[index];
                               return Card(
                                 child: ListTile(
-                                    // leading: Image.network(
-                                    //   auction['imageUrl'],
-                                    //   width: 60,
-                                    //   height: 60,
-                                    //   fit: BoxFit.cover,
-                                    // ),
-                                    title: Text(auction['productName']),
-                                    subtitle: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                            "Current Highest: ₹${auction['startingPrice']}"),
-                                        // Text("Bids: ${auction['totalBids']}"),
-                                        // Text(
-                                        //     "Ends In: ${auction['endtime']} mins"),
-                                      ],
-                                    ),
-                                    trailing: Text("${auction["status"]}")),
+                                  // leading: Image.network(
+                                  //   auction['imageUrl'],
+                                  //   width: 60,
+                                  //   height: 60,
+                                  //   fit: BoxFit.cover,
+                                  // ),
+                                  title: Text(auction['productName']),
+                                  subtitle: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                          "Current Highest: ₹${auction['startingPrice']}"),
+                                      // Text("Bids: ${auction['totalBids']}"),
+                                      // Text(
+                                      //     "Ends In: ${auction['endtime']} mins"),
+                                    ],
+                                  ),
+                                  trailing: Text("${auction["status"]}"),
+                                  onTap: () => Navigator.push(
+                                      // ignore: use_build_context_synchronously
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const BiddingPlatform(),
+                                      )),
+                                ),
                               );
                             },
                           );
@@ -112,9 +121,5 @@ class _AutionState extends State<Aution> {
             ))
       ],
     );
-  }
-
-  void placeBid(BuildContext context, DocumentSnapshot auction) {
-    // Implement bid placement dialog
   }
 }

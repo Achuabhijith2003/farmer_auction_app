@@ -118,6 +118,9 @@ class _SellerHomeState extends State<SellerHome> {
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
+                                  onTap: () {
+                                    
+                                  },
                                 ),
                               );
                             },

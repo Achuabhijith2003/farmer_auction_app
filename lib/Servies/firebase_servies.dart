@@ -74,7 +74,7 @@ class Firebaseseller extends FirebaseauthServies {
       }
 
       // Step 3: Upload Product Details to Firestore
-      await FirebaseFirestore.instance.collection("products").add({
+      final ref = await FirebaseFirestore.instance.collection("products").add({
         "name": productName,
         "description": productDescription,
         "Cost": Productcost,
@@ -82,6 +82,11 @@ class Firebaseseller extends FirebaseauthServies {
         "timestamp": FieldValue.serverTimestamp(),
         "UID": getuserID(),
         "sold": true
+      });
+
+      final docid = ref.id;
+      await FirebaseFirestore.instance.collection("products").add({
+        "docID":docid
       });
 
       print("Product uploaded successfully!");
@@ -99,4 +104,31 @@ class Firebaseseller extends FirebaseauthServies {
         .where("UID", isEqualTo: getuserID())
         .snapshots();
   }
+
+    Future<bool> deletesellerAuction(String docId) async {
+    try {
+      final docRef =
+          FirebaseFirestore.instance.collection('auctions').doc(docId);
+
+      await docRef.delete();
+
+      return true; // Deletion successful
+    } catch (error) {
+      return false; // Deletion failed
+    }
+  }
+
+      Future<bool> deletesellerProducts(String docId) async {
+    try {
+      final docRef =
+          FirebaseFirestore.instance.collection('products').doc(docId);
+
+      await docRef.delete();
+
+      return true; // Deletion successful
+    } catch (error) {
+      return false; // Deletion failed
+    }
+  }
+
 }
