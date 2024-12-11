@@ -44,6 +44,15 @@ class FirebaseauthServies {
 
 // Firebase servies  for buyers
 class Firebasebuyer extends FirebaseauthServies {
+  
+  Stream<DocumentSnapshot<Map<String, dynamic>>> fetchbuyersingleProducts(
+      String docid) {
+    return FirebaseFirestore.instance
+        .collection('products')
+        .doc(docid)
+        .snapshots();
+  }
+
   Stream<QuerySnapshot> fetchbuyerProducts() {
     return FirebaseFirestore.instance.collection('products').snapshots();
   }
