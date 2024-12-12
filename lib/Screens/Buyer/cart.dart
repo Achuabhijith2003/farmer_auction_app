@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:farmer_auction_app/Screens/Buyer/odrderplace.dart';
 import 'package:farmer_auction_app/Servies/firebase_servies.dart';
 import 'package:flutter/material.dart';
 import 'package:farmer_auction_app/Screens/Buyer/product_info.dart';
@@ -197,20 +198,26 @@ class _CartState extends State<Cart> {
                     vertical: 16.0, horizontal: 24.0),
               ),
               onPressed: () async {
-                print('Placing order...'); // Debug log
-                final cartSnapshot = await _firestore
-                    .collection('cart')
-                    .get(); // Fetch current cart
-                if (cartSnapshot.docs.isNotEmpty) {
-                  await placeOrder(cartSnapshot.docs);
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Cart is empty. Cannot place order.'),
-                      backgroundColor: Colors.red,
-                    ),
-                  );
-                }
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const Odrderplace(), // Pass productId
+                  ),
+                );
+                // print('Placing order...'); // Debug log
+                // final cartSnapshot = await _firestore
+                //     .collection('cart')
+                //     .get(); // Fetch current cart
+                // if (cartSnapshot.docs.isNotEmpty) {
+                //   await placeOrder(cartSnapshot.docs);
+                // } else {
+                //   ScaffoldMessenger.of(context).showSnackBar(
+                //     const SnackBar(
+                //       content: Text('Cart is empty. Cannot place order.'),
+                //       backgroundColor: Colors.red,
+                //     ),
+                //   );
+                // }
               },
               child: const Text(
                 'Place Order',
