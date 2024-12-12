@@ -44,9 +44,6 @@ class FirebaseauthServies {
 
 // Firebase servies  for buyers
 class Firebasebuyer extends FirebaseauthServies {
-
-
-
   Future<bool> addtocarts(String docId) async {
     try {
       await FirebaseFirestore.instance
@@ -59,21 +56,29 @@ class Firebasebuyer extends FirebaseauthServies {
     }
   }
 
+  void modifystatusAution(String productid) {
+    FirebaseFirestore.instance
+        .collection('auctions')
+        .doc(productid)
+        .update({"status": "end"});
+  }
 
-Stream<QuerySnapshot<Map<String, dynamic>>> fetchbuyercartproduct(String docid) {
-  return FirebaseFirestore.instance
-      .collection('products')
-      .where("docID", isEqualTo: docid) // Replace "field" with the actual field name
-      .snapshots();
-}
+  Stream<QuerySnapshot<Map<String, dynamic>>> fetchbuyercartproduct(
+      String docid) {
+    return FirebaseFirestore.instance
+        .collection('products')
+        .where("docID",
+            isEqualTo: docid) // Replace "field" with the actual field name
+        .snapshots();
+  }
 
-Stream<DocumentSnapshot<Map<String, dynamic>>> fetchbuyerincartproduct(String docid) {
-  return FirebaseFirestore.instance
-      .collection('products')
-      .doc(docid) // Fetch the document by its ID
-      .snapshots();
-}
-
+  Stream<DocumentSnapshot<Map<String, dynamic>>> fetchbuyerincartproduct(
+      String docid) {
+    return FirebaseFirestore.instance
+        .collection('products')
+        .doc(docid) // Fetch the document by its ID
+        .snapshots();
+  }
 
   Stream<DocumentSnapshot<Map<String, dynamic>>> fetchbuyersingleProducts(
       String docid) {
@@ -82,8 +87,6 @@ Stream<DocumentSnapshot<Map<String, dynamic>>> fetchbuyerincartproduct(String do
         .doc(docid)
         .snapshots();
   }
-
-  
 
   Stream<QuerySnapshot> fetchbuyerProducts() {
     return FirebaseFirestore.instance.collection('products').snapshots();
@@ -219,5 +222,21 @@ class Firebaseseller extends FirebaseauthServies {
     } catch (error) {
       return false; // Deletion failed
     }
+  }
+}
+
+class Operations {
+  checkDateandTime(Timestamp datetime) {
+    bool istrue = false;
+    istrue = DateTime.now().toUtc().isAfter(
+          DateTime.fromMillisecondsSinceEpoch(
+            datetime.millisecondsSinceEpoch,
+            isUtc: false,
+          ).toUtc(),
+        );
+    if (istrue) {
+      return istrue;
+    }
+    return istrue;
   }
 }

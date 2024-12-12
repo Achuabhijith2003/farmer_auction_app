@@ -139,6 +139,7 @@ class _BiddingPlatformState extends State<BiddingPlatform> {
                       Text('End Time: ${endTime.toLocal()}'),
                       const SizedBox(height: 10),
                       TextField(
+                        enabled: true,// point
                         controller: bidController,
                         decoration: const InputDecoration(
                           labelText: 'Enter your bid',

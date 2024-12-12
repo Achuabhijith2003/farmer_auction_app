@@ -5,15 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 
-class Odrderplace extends StatefulWidget {
-  const Odrderplace({super.key});
+class Autionorderplace extends StatefulWidget {
+  const Autionorderplace({super.key});
 
   @override
-  State<Odrderplace> createState() => _OdrderplaceState();
+  State<Autionorderplace> createState() => _AutionorderplaceState();
 }
 
-class _OdrderplaceState extends State<Odrderplace> {
-  String? selectedPaymentMethod;
+class _AutionorderplaceState extends State<Autionorderplace> {
+   String? selectedPaymentMethod;
   String userLocation = "Location not selected";
   bool isLoadingLocation = false;
 
@@ -78,15 +78,11 @@ class _OdrderplaceState extends State<Odrderplace> {
       });
     }
   }
-
-  // Confirm order logic
-// Confirm order logic
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Place Your Order'),
+        title: const Text('Place Your Aution Order'),
         backgroundColor: Colors.green,
       ),
       body: SingleChildScrollView(
