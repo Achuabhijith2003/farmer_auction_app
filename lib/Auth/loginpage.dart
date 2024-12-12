@@ -5,7 +5,7 @@ import 'package:farmer_auction_app/Auth/SignUp.dart';
 import 'package:farmer_auction_app/Auth/accountRecovery.dart';
 import 'package:farmer_auction_app/Screens/Buyer/Remasted_home.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_signin_button/flutter_signin_button.dart';
+// import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -264,68 +264,68 @@ class _LoginpageState extends State<Loginpage> {
                         const SizedBox(
                           height: 25,
                         ),
-                        Row(
-                          children: <Widget>[
-                            Expanded(
-                              child: FadeInUp(
-                                  duration: const Duration(milliseconds: 1800),
-                                  child: SignInButton(Buttons.Google,
-                                      text: "Sign up with Google",
-                                      onPressed: () {
-                                    showDialog(
-                                      context: context,
-                                      barrierDismissible:
-                                          false, // Disable user interaction while uploading
-                                      builder: (context) => const Center(
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            CircularProgressIndicator(
-                                              color: Colors.grey,
-                                            ),
-                                            SizedBox(
-                                                height:
-                                                    10), // Add spacing between indicator and text
-                                            // Text(
-                                            //   "Welcome Back",
-                                            //   style: GoogleFonts
-                                            //       .barlowSemiCondensed(
-                                            //           fontSize: 16,
-                                            //           color: Colors.grey),
-                                            // ),
-                                          ],
-                                        ),
-                                      ),
-                                    );
-                                    _signInWithGoogle();
-                                  })),
-                            ),
-                            const SizedBox(
-                              width: 0,
-                            ),
-                            // Expanded(
-                            //   child: FadeInUp(
-                            //       duration: const Duration(milliseconds: 1900),
-                            //       child: MaterialButton(
-                            //         onPressed: () {},
-                            //         height: 50,
-                            //         shape: RoundedRectangleBorder(
-                            //           borderRadius: BorderRadius.circular(50),
-                            //         ),
-                            //         color: Colors.black,
-                            //         child: const Center(
-                            //           child: Text(
-                            //             "Github",
-                            //             style: TextStyle(
-                            //                 color: Colors.white,
-                            //                 fontWeight: FontWeight.bold),
-                            //           ),
-                            //         ),
-                            //       )),
-                            // )
-                          ],
-                        )
+                        // Row(
+                        //   children: <Widget>[
+                        //     Expanded(
+                        //       child: FadeInUp(
+                        //           duration: const Duration(milliseconds: 1800),
+                        //           child: SignInButton(Buttons.Google,
+                        //               text: "Sign up with Google",
+                        //               onPressed: () {
+                        //             showDialog(
+                        //               context: context,
+                        //               barrierDismissible:
+                        //                   false, // Disable user interaction while uploading
+                        //               builder: (context) => const Center(
+                        //                 child: Column(
+                        //                   mainAxisAlignment:
+                        //                       MainAxisAlignment.center,
+                        //                   children: [
+                        //                     CircularProgressIndicator(
+                        //                       color: Colors.grey,
+                        //                     ),
+                        //                     SizedBox(
+                        //                         height:
+                        //                             10), // Add spacing between indicator and text
+                        //                     // Text(
+                        //                     //   "Welcome Back",
+                        //                     //   style: GoogleFonts
+                        //                     //       .barlowSemiCondensed(
+                        //                     //           fontSize: 16,
+                        //                     //           color: Colors.grey),
+                        //                     // ),
+                        //                   ],
+                        //                 ),
+                        //               ),
+                        //             );
+                        //             _signInWithGoogle();
+                        //           })),
+                        //     ),
+                        //     const SizedBox(
+                        //       width: 0,
+                        //     ),
+                        //     // Expanded(
+                        //     //   child: FadeInUp(
+                        //     //       duration: const Duration(milliseconds: 1900),
+                        //     //       child: MaterialButton(
+                        //     //         onPressed: () {},
+                        //     //         height: 50,
+                        //     //         shape: RoundedRectangleBorder(
+                        //     //           borderRadius: BorderRadius.circular(50),
+                        //     //         ),
+                        //     //         color: Colors.black,
+                        //     //         child: const Center(
+                        //     //           child: Text(
+                        //     //             "Github",
+                        //     //             style: TextStyle(
+                        //     //                 color: Colors.white,
+                        //     //                 fontWeight: FontWeight.bold),
+                        //     //           ),
+                        //     //         ),
+                        //     //       )),
+                        //     // )
+                        //   ],
+                        // )
                       ],
                     ),
                   ),
