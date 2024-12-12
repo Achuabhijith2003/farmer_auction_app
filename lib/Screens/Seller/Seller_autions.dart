@@ -100,13 +100,12 @@ class _SellerAutionsState extends State<SellerAutions> {
                                 final auction = auctions[index];
                                 return Card(
                                   child: ListTile(
-                                     onTap: () => Navigator.push(
-                                      // ignore: use_build_context_synchronously
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            Autiondetials(docID: auction["docID"])
-                                      )),
+                                    onTap: () => Navigator.push(
+                                        // ignore: use_build_context_synchronously
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => Autiondetials(
+                                                docID: auction["docID"]))),
                                     // leading: Image.network(
                                     //   auction['imageUrl'],
                                     //   width: 60,
@@ -125,30 +124,30 @@ class _SellerAutionsState extends State<SellerAutions> {
                                         //     "Ends In: ${auction['endtime']} mins"),
                                       ],
                                     ),
-                                    trailing: IconButton(
-                                      icon: const Icon(Icons.delete),
-                                      onPressed: () async {
-                                        // Delete Auction Logic
-                                        final deletesucessfully =
-                                            sellerservies.deletesellerAuction(
-                                                auction["docID"]);
-                                        if (await deletesucessfully) {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            const SnackBar(
-                                                content: Text(
-                                                    'Deleted successfully!')),
-                                          );
-                                        } else {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            const SnackBar(
-                                                content:
-                                                    Text('Deleted failed!')),
-                                          );
-                                        }
-                                      },
-                                    ),
+                                    // trailing: IconButton(
+                                    //   icon: const Icon(Icons.delete),
+                                    //   onPressed: () async {
+                                    //     // Delete Auction Logic
+                                    //     final deletesucessfully =
+                                    //         sellerservies.deletesellerAuction(
+                                    //             auction["docID"]);
+                                    //     if (await deletesucessfully) {
+                                    //       ScaffoldMessenger.of(context)
+                                    //           .showSnackBar(
+                                    //         const SnackBar(
+                                    //             content: Text(
+                                    //                 'Deleted successfully!')),
+                                    //       );
+                                    //     } else {
+                                    //       ScaffoldMessenger.of(context)
+                                    //           .showSnackBar(
+                                    //         const SnackBar(
+                                    //             content:
+                                    //                 Text('Deleted failed!')),
+                                    //       );
+                                    //     }
+                                    //   },
+                                    // ),
                                   ),
                                 );
                               },

@@ -14,45 +14,26 @@ class Autiondetials extends StatefulWidget {
 
 class _AutiondetialsState extends State<Autiondetials> {
   Firebasebuyer buyyerservies = Firebasebuyer();
-  final TextEditingController bidController = TextEditingController();
+
   double highestBidAmount = 0.0;
+  bool isstatus = true;
 
-  void placeBid(String auctionId, double currentPrice) async {
-    double bidAmount = double.tryParse(bidController.text) ?? 0.0;
-
-    if (bidAmount <= currentPrice) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Bid must be higher than the current price.'),
-        ),
-      );
-      return;
-    }
-
+  void chagestatus(String auctionId, String status, bool statuss) async {
     try {
       await FirebaseFirestore.instance
           .collection('auctions')
           .doc(auctionId)
-          .update({
-        'currentPrice': bidAmount,
-      });
-
-      await FirebaseFirestore.instance
-          .collection('auctions')
-          .doc(auctionId)
-          .collection('bids')
-          .add({
-        'bid': bidAmount,
-        'UID': buyyerservies.getuserID(),
-      });
+          .update({"status": status});
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Bid placed successfully!')),
+        const SnackBar(content: Text('change  successfully!')),
       );
-      bidController.clear();
+      setState(() {
+        isstatus = !statuss;
+      });
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to place bid: $e')),
+        SnackBar(content: Text('Failed to change: $e')),
       );
     }
   }
@@ -93,6 +74,10 @@ class _AutiondetialsState extends State<Autiondetials> {
               final startingPrice = auction['startingPrice'];
               final endTime = (auction['endTime'] as Timestamp).toDate();
               final imageUrls = List<String>.from(auction['images'] ?? []);
+              final status = auction["Highest bidder uid"];
+              if (status == "end") {
+                isstatus = false;
+              }
 
               return Card(
                 margin: const EdgeInsets.all(8.0),
@@ -138,19 +123,18 @@ class _AutiondetialsState extends State<Autiondetials> {
                           'Current Price: \$${currentPrice.toStringAsFixed(2)}'),
                       Text('End Time: ${endTime.toLocal()}'),
                       const SizedBox(height: 10),
-                      // TextField(
-                      //   controller: bidController,
-                      //   decoration: const InputDecoration(
-                      //     labelText: 'Enter your bid',
-                      //     border: OutlineInputBorder(),
-                      //   ),
-                      //   keyboardType: TextInputType.number,
-                      // ),
-                      // const SizedBox(height: 10),
-                      // ElevatedButton(
-                      //   onPressed: () => placeBid(widget.docID, currentPrice),
-                      //   child: const Text('Place Bid'),
-                      // ),
+                      if (isstatus)
+                        ElevatedButton(
+                          onPressed: () =>
+                              chagestatus(widget.docID, "end", isstatus),
+                          child: const Text('change to end'),
+                        )
+                      else
+                        ElevatedButton(
+                          onPressed: () =>
+                              chagestatus(widget.docID, "ongoing", isstatus),
+                          child: const Text('change to ongoing'),
+                        )
                     ],
                   ),
                 ),
@@ -203,7 +187,8 @@ class _AutiondetialsState extends State<Autiondetials> {
                     shape: Border.all(color: Colors.greenAccent),
                     child: ListTile(
                       title: Text('Highest Bidder: $name'),
-                      subtitle: Text('Bid Amount: \$${bidAmount.toStringAsFixed(2)}'),
+                      subtitle:
+                          Text('Bid Amount: \$${bidAmount.toStringAsFixed(2)}'),
                     ),
                   );
                 },
