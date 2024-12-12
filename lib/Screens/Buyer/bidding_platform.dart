@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:farmer_auction_app/Screens/Buyer/autionorderplace.dart';
 import 'package:farmer_auction_app/Servies/firebase_servies.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -16,8 +17,14 @@ class _BiddingPlatformState extends State<BiddingPlatform> {
   Firebasebuyer buyyerservies = Firebasebuyer();
   final TextEditingController bidController = TextEditingController();
   double highestBidAmount = 0.0;
+  late bool isautionend;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
 
-  void placeBid(String auctionId, double currentPrice) async {
+  void placeBid(String auctionId, double currentPrice ,String higestbider) async {
     double bidAmount = double.tryParse(bidController.text) ?? 0.0;
 
     if (bidAmount <= currentPrice) {
@@ -35,6 +42,7 @@ class _BiddingPlatformState extends State<BiddingPlatform> {
           .doc(auctionId)
           .update({
         'currentPrice': bidAmount,
+        'Highest bidder uid':higestbider
       });
 
       await FirebaseFirestore.instance
@@ -93,6 +101,15 @@ class _BiddingPlatformState extends State<BiddingPlatform> {
               final startingPrice = auction['startingPrice'];
               final endTime = (auction['endTime'] as Timestamp).toDate();
               final imageUrls = List<String>.from(auction['images'] ?? []);
+              final status = auction["status"];
+              final autionid = auction["docID"];
+              final highestBidders = auction["Highest bidder uid"];
+
+              if (status == "end") {
+                isautionend = false;
+              } else {
+                isautionend = true;
+              }
 
               return Card(
                 margin: const EdgeInsets.all(8.0),
@@ -139,7 +156,8 @@ class _BiddingPlatformState extends State<BiddingPlatform> {
                       Text('End Time: ${endTime.toLocal()}'),
                       const SizedBox(height: 10),
                       TextField(
-                        enabled: true,// point
+                        enabled:
+                            isautionend, // Disable input if auction is over
                         controller: bidController,
                         decoration: const InputDecoration(
                           labelText: 'Enter your bid',
@@ -148,10 +166,27 @@ class _BiddingPlatformState extends State<BiddingPlatform> {
                         keyboardType: TextInputType.number,
                       ),
                       const SizedBox(height: 10),
-                      ElevatedButton(
-                        onPressed: () => placeBid(widget.docID, currentPrice),
-                        child: const Text('Place Bid'),
-                      ),
+                      if (isautionend)
+                        ElevatedButton(
+                          onPressed: () => placeBid(widget.docID, currentPrice,buyyerservies.getuserID()),
+                          child: const Text('Place Bid'),
+                        )
+                      else if (highestBidders == buyyerservies.getuserID())
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => Autionorderplace(
+                                  autionID: autionid,
+                                ), // Pass productId
+                              ),
+                            );
+                          },
+                          child: const Text('Pay Now'),
+                        )
+                      else
+                        const Text("Auction is over"),
                     ],
                   ),
                 ),
@@ -177,11 +212,11 @@ class _BiddingPlatformState extends State<BiddingPlatform> {
               }
 
               final highestBidDoc = snapshot.data!.docs.first;
-              final uid = highestBidDoc['UID'];
+              final highestBidder = highestBidDoc['UID'];
               final bidAmount = highestBidDoc['bid'];
 
               return FutureBuilder<Map<String, dynamic>?>(
-                future: buyyerservies.fetchUserDetails(uid),
+                future: buyyerservies.fetchUserDetails(highestBidder),
                 builder: (context, userSnapshot) {
                   if (userSnapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
@@ -204,7 +239,8 @@ class _BiddingPlatformState extends State<BiddingPlatform> {
                     shape: Border.all(color: Colors.greenAccent),
                     child: ListTile(
                       title: Text('Highest Bidder: $name'),
-                      subtitle: Text('Bid Amount: \$${bidAmount.toStringAsFixed(2)}'),
+                      subtitle:
+                          Text('Bid Amount: \$${bidAmount.toStringAsFixed(2)}'),
                     ),
                   );
                 },

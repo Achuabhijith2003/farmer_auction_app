@@ -77,6 +77,7 @@ class _AddAuctionState extends State<AddAuction> {
         'productName': productName,
         'startingPrice': startingPrice,
         'currentPrice': startingPrice,
+        'Highest bidder uid':"",
         'endTime': endTime,
         'sellerId': sellerbase.getuserID(), // Replace with actual seller ID
         'createdAt': DateTime.now(),

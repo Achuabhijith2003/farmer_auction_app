@@ -4,22 +4,26 @@ import 'package:farmer_auction_app/Servies/firebase_servies.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:google_fonts/google_fonts.dart';
 
+// ignore: must_be_immutable
 class Autionorderplace extends StatefulWidget {
-  const Autionorderplace({super.key});
+  String autionID;
+
+  Autionorderplace({super.key, required this.autionID});
 
   @override
   State<Autionorderplace> createState() => _AutionorderplaceState();
 }
 
 class _AutionorderplaceState extends State<Autionorderplace> {
-   String? selectedPaymentMethod;
+  String? selectedPaymentMethod;
   String userLocation = "Location not selected";
   bool isLoadingLocation = false;
 
   double finalamount = 0.0;
 
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  // final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final Firebasebuyer buyerservices = Firebasebuyer();
 
   // Get the current location and convert to a human-readable address
@@ -78,6 +82,7 @@ class _AutionorderplaceState extends State<Autionorderplace> {
       });
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -148,115 +153,77 @@ class _AutionorderplaceState extends State<Autionorderplace> {
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
-            StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-              stream: _firestore
-                  .collection('cart')
-                  .where("UserID", isEqualTo: buyerservices.getuserID())
-                  .snapshots(),
-              builder: (context, cartSnapshot) {
-                if (cartSnapshot.connectionState == ConnectionState.waiting) {
+            StreamBuilder<DocumentSnapshot>(
+              stream: buyerservices.fetchautiondetails(widget.autionID),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 }
 
-                if (!cartSnapshot.hasData || cartSnapshot.data!.docs.isEmpty) {
+                if (!snapshot.hasData || !snapshot.data!.exists) {
                   return const Center(
                     child: Text(
-                      'Your cart is empty.',
-                      style: TextStyle(fontSize: 18),
+                      'Auction not found.',
+                      style: TextStyle(fontSize: 18, color: Colors.black),
                     ),
                   );
                 }
 
-                final cartItems = cartSnapshot.data!.docs;
+                final auction = snapshot.data!;
+                final productName = auction['productName'];
+                final currentPrice = auction['currentPrice'];
+                final startingPrice = auction['startingPrice'];
+                final endTime = (auction['endTime'] as Timestamp).toDate();
+                final imageUrls = List<String>.from(auction['images'] ?? []);
 
-                return Column(
-                  children: [
-                    // Display each item in the cart
-                    ...cartItems.map((item) {
-                      final productDocId = item['DocID'];
-
-                      return StreamBuilder<
-                          DocumentSnapshot<Map<String, dynamic>>>(
-                        stream:
-                            buyerservices.fetchbuyerincartproduct(productDocId),
-                        builder: (context, productSnapshot) {
-                          if (productSnapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return const Center(
-                                child: CircularProgressIndicator());
-                          }
-
-                          if (!productSnapshot.hasData ||
-                              !productSnapshot.data!.exists) {
-                            return const SizedBox
-                                .shrink(); // Skip if product data is missing
-                          }
-
-                          final productData = productSnapshot.data!.data()!;
-                          final productName = productData['name'] ?? 'No Name';
-                          final productCost = double.tryParse(
-                                  productData['Cost']?.toString() ?? '0') ??
-                              0.0;
-
-                          return ListTile(
-                            title: Text(productName),
-                            trailing: Text(
-                              '₹$productCost',
-                              style: const TextStyle(color: Colors.green),
+                return Card(
+                  margin: const EdgeInsets.all(8.0),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Display the product image
+                        if (imageUrls.isNotEmpty)
+                          SizedBox(
+                            height: 200,
+                            child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: imageUrls.length,
+                              itemBuilder: (context, index) {
+                                return Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Image.network(
+                                    imageUrls[index],
+                                    fit: BoxFit.cover,
+                                    height: 200,
+                                    width: 200,
+                                  ),
+                                );
+                              },
                             ),
-                          );
-                        },
-                      );
-                    }).toList(),
-                    // Calculate and display the total amount
-                    FutureBuilder<double>(
-                      future: Future<double>(() async {
-                        double total = 0.0;
-                        for (var item in cartItems) {
-                          final productDoc = await _firestore
-                              .collection('products')
-                              .doc(item['DocID'])
-                              .get();
-
-                          if (productDoc.exists) {
-                            final productData = productDoc.data();
-                            total += double.tryParse(
-                                    productData?['Cost']?.toString() ?? '0') ??
-                                0.0;
-                          }
-                        }
-                        return total;
-                      }),
-                      builder: (context, totalSnapshot) {
-                        if (totalSnapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const Center(
-                              child: CircularProgressIndicator());
-                        }
-
-                        final totalAmount = totalSnapshot.data ?? 0.0;
-                        finalamount = totalAmount;
-
-                        return Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text(
-                              'Total Amount:',
-                              style: TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.bold),
-                            ),
-                            Text(
-                              '₹$totalAmount',
-                              style: const TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.green),
-                            ),
-                          ],
-                        );
-                      },
+                          )
+                        else
+                          const Text('No images available'),
+                        const SizedBox(height: 10),
+                        Text(
+                          productName,
+                          style: GoogleFonts.dmSerifDisplay(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Text(
+                            'Starting Price: \$${startingPrice.toStringAsFixed(2)}'),
+                        Text(
+                            'Current Price: \$${currentPrice.toStringAsFixed(2)}'),
+                        Text('End Time: ${endTime.toLocal()}'),
+                        const SizedBox(height: 10),
+                        const SizedBox(height: 10),
+                      ],
                     ),
-                  ],
+                  ),
                 );
               },
             ),

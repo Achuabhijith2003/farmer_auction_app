@@ -110,6 +110,27 @@ class Firebasebuyer extends FirebaseauthServies {
         .snapshots();
   }
 
+  Future<String> getHighestBidUserID(String docID) async {
+    try {
+      final snapshot = await FirebaseFirestore.instance
+          .collection('auctions')
+          .doc(docID)
+          .collection('bids')
+          .orderBy('bid', descending: true)
+          .limit(1)
+          .get();
+
+      if (snapshot.docs.isNotEmpty) {
+        return snapshot.docs.first['UID'] as String; // Return only the userID
+      } else {
+        return "null"; // No bids found
+      }
+    } catch (e) {
+      print('Error fetching highest bidder userID: $e');
+      return "null";
+    }
+  }
+
   Stream<QuerySnapshot<Map<String, dynamic>>> fetchbids(String docID) {
     return FirebaseFirestore.instance
         .collection('auctions')
