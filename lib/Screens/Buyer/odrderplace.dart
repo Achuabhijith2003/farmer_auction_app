@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:farmer_auction_app/Servies/firebase_servies.dart';
+import 'package:farmer_auction_app/Servies/payment.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
@@ -15,6 +16,8 @@ class _OdrderplaceState extends State<Odrderplace> {
   String? selectedPaymentMethod;
   String userLocation = "Location not selected";
   bool isLoadingLocation = false;
+
+  double finalamount = 0.0;
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final Firebasebuyer buyerservices = Firebasebuyer();
@@ -77,35 +80,7 @@ class _OdrderplaceState extends State<Odrderplace> {
   }
 
   // Confirm order logic
-  void confirmOrder() {
-    if (userLocation == "Location not selected") {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please select your location.'),
-          backgroundColor: Colors.red,
-        ),
-      );
-      return;
-    }
-
-    if (selectedPaymentMethod == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please select a payment method.'),
-          backgroundColor: Colors.red,
-        ),
-      );
-      return;
-    }
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-            'Order placed successfully! Location: $userLocation, Payment: $selectedPaymentMethod'),
-        backgroundColor: Colors.green,
-      ),
-    );
-  }
+// Confirm order logic
 
   @override
   Widget build(BuildContext context) {
@@ -264,6 +239,7 @@ class _OdrderplaceState extends State<Odrderplace> {
                         }
 
                         final totalAmount = totalSnapshot.data ?? 0.0;
+                        finalamount = totalAmount;
 
                         return Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -291,7 +267,83 @@ class _OdrderplaceState extends State<Odrderplace> {
             const SizedBox(height: 24),
             Center(
               child: ElevatedButton(
-                onPressed: confirmOrder,
+                onPressed: () {
+                  if (confirmOrder()) {
+                    if (selectedPaymentMethod == "UPI Payment") {
+                      showModalBottomSheet(
+                        context: context,
+                        builder: (context) {
+                          return Container(
+                            padding: const EdgeInsets.all(16),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Text(
+                                  'Order Details',
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                const SizedBox(height: 8),
+                                Text('Location: $userLocation'),
+                                Text('Payment Method: $selectedPaymentMethod '),
+                                Text("Total Amount: $finalamount"),
+                                const SizedBox(height: 16),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              const Payments(),
+                                        ));
+                                  },
+                                  child: const Text('Pay Now'),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      );
+                    } else {
+                      showModalBottomSheet(
+                        context: context,
+                        builder: (context) {
+                          return Container(
+                            padding: const EdgeInsets.all(16),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Text(
+                                  'Order Details',
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                const SizedBox(height: 8),
+                                Text('Location: $userLocation'),
+                                Text('Payment Method: $selectedPaymentMethod '),
+                                Text("Total Amount: $finalamount"),
+                                const SizedBox(height: 16),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              const Payments(),
+                                        ));
+                                  },
+                                  child: const Text('Order Now'),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      );
+                    }
+                  }
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green,
                   padding: const EdgeInsets.symmetric(
@@ -307,5 +359,37 @@ class _OdrderplaceState extends State<Odrderplace> {
         ),
       ),
     );
+  }
+
+  bool confirmOrder() {
+    if (userLocation == "Location not selected") {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please select your location.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return false; // Return null explicitly in case of errors
+    } else if (selectedPaymentMethod == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please select a payment method.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return false; // Return null explicitly in case of errors
+    } else {
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(
+      //     content: Text(
+      //       'Order placed successfully! Location: $userLocation, Payment: $selectedPaymentMethod',
+      //     ),
+      //     backgroundColor: Colors.green,
+      //   ),
+      // );
+
+      // Return the bottom sheet controller
+      return true;
+    }
   }
 }

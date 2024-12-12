@@ -83,6 +83,8 @@ Stream<DocumentSnapshot<Map<String, dynamic>>> fetchbuyerincartproduct(String do
         .snapshots();
   }
 
+  
+
   Stream<QuerySnapshot> fetchbuyerProducts() {
     return FirebaseFirestore.instance.collection('products').snapshots();
   }
