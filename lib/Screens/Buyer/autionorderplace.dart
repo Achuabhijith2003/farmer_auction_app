@@ -175,6 +175,7 @@ class _AutionorderplaceState extends State<Autionorderplace> {
                 final startingPrice = auction['startingPrice'];
                 final endTime = (auction['endTime'] as Timestamp).toDate();
                 final imageUrls = List<String>.from(auction['images'] ?? []);
+                finalamount = currentPrice;
 
                 return Card(
                   margin: const EdgeInsets.all(8.0),
