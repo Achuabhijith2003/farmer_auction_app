@@ -44,7 +44,31 @@ class FirebaseauthServies {
 
 // Firebase servies  for buyers
 class Firebasebuyer extends FirebaseauthServies {
-  
+
+
+
+  Future<bool> addtocarts(String docId) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection("cart")
+          .add({"DocID": docId, "UserID": getuserID()});
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    }
+  }
+
+
+Stream<QuerySnapshot<Map<String, dynamic>>> fetchbuyercartproduct(String docid) {
+  return FirebaseFirestore.instance
+      .collection('products')
+      .where("docID", isEqualTo: docid) // Replace "field" with the actual field name
+      .snapshots();
+}
+
+
+
   Stream<DocumentSnapshot<Map<String, dynamic>>> fetchbuyersingleProducts(
       String docid) {
     return FirebaseFirestore.instance

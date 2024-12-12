@@ -13,15 +13,26 @@ class ProductInfo extends StatefulWidget {
 class _ProductInfoState extends State<ProductInfo> {
   final Firebasebuyer buyerServices = Firebasebuyer();
 
-  void addToCart(String productId) {
+  void addToCart(String productId) async {
     print('Adding product to cart: $productId'); // Debug log
+
     // Implementation for adding the product to the cart
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Product added to cart!'),
-        backgroundColor: Colors.green,
-      ),
-    );
+    final iscarted = await buyerServices.addtocarts(widget.productId);
+    if (iscarted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Product added to cart!'),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Product  added to cart is failed!'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   @override
