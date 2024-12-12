@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:farmer_auction_app/Servies/firebase_servies.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:geocoding/geocoding.dart'; // Import the geocoding package
+import 'package:geocoding/geocoding.dart';
 
 class Odrderplace extends StatefulWidget {
   const Odrderplace({super.key});
@@ -11,10 +13,13 @@ class Odrderplace extends StatefulWidget {
 
 class _OdrderplaceState extends State<Odrderplace> {
   String? selectedPaymentMethod;
-  String? userLocation = "Location not selected";
+  String userLocation = "Location not selected";
   bool isLoadingLocation = false;
 
-  // Method to fetch and convert the location into a readable name
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final Firebasebuyer buyerservices = Firebasebuyer();
+
+  // Get the current location and convert to a human-readable address
   Future<void> getCurrentLocation() async {
     setState(() {
       isLoadingLocation = true;
@@ -42,7 +47,6 @@ class _OdrderplaceState extends State<Odrderplace> {
       Position position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high);
 
-      // Reverse geocoding to get the place name
       List<Placemark> placemarks =
           await placemarkFromCoordinates(position.latitude, position.longitude);
 
@@ -72,9 +76,9 @@ class _OdrderplaceState extends State<Odrderplace> {
     }
   }
 
-  // Method to handle order confirmation
+  // Confirm order logic
   void confirmOrder() {
-    if (userLocation == null || userLocation == "Location not selected") {
+    if (userLocation == "Location not selected") {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Please select your location.'),
@@ -94,7 +98,6 @@ class _OdrderplaceState extends State<Odrderplace> {
       return;
     }
 
-    // Perform order submission logic here
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
@@ -111,7 +114,7 @@ class _OdrderplaceState extends State<Odrderplace> {
         title: const Text('Place Your Order'),
         backgroundColor: Colors.green,
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -129,15 +132,13 @@ class _OdrderplaceState extends State<Odrderplace> {
                     backgroundColor: Colors.blue,
                   ),
                   child: isLoadingLocation
-                      ? const CircularProgressIndicator(
-                          color: Colors.white,
-                        )
+                      ? const CircularProgressIndicator(color: Colors.white)
                       : const Text('Get Location'),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
                   child: Text(
-                    userLocation!,
+                    userLocation,
                     style: const TextStyle(fontSize: 16),
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -150,31 +151,144 @@ class _OdrderplaceState extends State<Odrderplace> {
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
-            Column(
-              children: [
-                RadioListTile<String>(
-                  title: const Text('Cash on Delivery'),
-                  value: 'Cash on Delivery',
-                  groupValue: selectedPaymentMethod,
-                  onChanged: (value) {
-                    setState(() {
-                      selectedPaymentMethod = value;
-                    });
-                  },
-                ),
-                RadioListTile<String>(
-                  title: const Text('Online Payment'),
-                  value: 'Online Payment',
-                  groupValue: selectedPaymentMethod,
-                  onChanged: (value) {
-                    setState(() {
-                      selectedPaymentMethod = value;
-                    });
-                  },
-                ),
-              ],
+            RadioListTile<String>(
+              title: const Text('Cash on Delivery'),
+              value: 'Cash on Delivery',
+              groupValue: selectedPaymentMethod,
+              onChanged: (value) {
+                setState(() {
+                  selectedPaymentMethod = value;
+                });
+              },
             ),
-            const Spacer(),
+            RadioListTile<String>(
+              title: const Text('UPI Payment'),
+              value: 'UPI Payment',
+              groupValue: selectedPaymentMethod,
+              onChanged: (value) {
+                setState(() {
+                  selectedPaymentMethod = value;
+                });
+              },
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              'Cart Summary',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+              stream: _firestore
+                  .collection('cart')
+                  .where("UserID", isEqualTo: buyerservices.getuserID())
+                  .snapshots(),
+              builder: (context, cartSnapshot) {
+                if (cartSnapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                if (!cartSnapshot.hasData || cartSnapshot.data!.docs.isEmpty) {
+                  return const Center(
+                    child: Text(
+                      'Your cart is empty.',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  );
+                }
+
+                final cartItems = cartSnapshot.data!.docs;
+
+                return Column(
+                  children: [
+                    // Display each item in the cart
+                    ...cartItems.map((item) {
+                      final productDocId = item['DocID'];
+
+                      return StreamBuilder<
+                          DocumentSnapshot<Map<String, dynamic>>>(
+                        stream:
+                            buyerservices.fetchbuyerincartproduct(productDocId),
+                        builder: (context, productSnapshot) {
+                          if (productSnapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          }
+
+                          if (!productSnapshot.hasData ||
+                              !productSnapshot.data!.exists) {
+                            return const SizedBox
+                                .shrink(); // Skip if product data is missing
+                          }
+
+                          final productData = productSnapshot.data!.data()!;
+                          final productName = productData['name'] ?? 'No Name';
+                          final productCost = double.tryParse(
+                                  productData['Cost']?.toString() ?? '0') ??
+                              0.0;
+
+                          return ListTile(
+                            title: Text(productName),
+                            trailing: Text(
+                              '₹$productCost',
+                              style: const TextStyle(color: Colors.green),
+                            ),
+                          );
+                        },
+                      );
+                    }).toList(),
+                    // Calculate and display the total amount
+                    FutureBuilder<double>(
+                      future: Future<double>(() async {
+                        double total = 0.0;
+                        for (var item in cartItems) {
+                          final productDoc = await _firestore
+                              .collection('products')
+                              .doc(item['DocID'])
+                              .get();
+
+                          if (productDoc.exists) {
+                            final productData = productDoc.data();
+                            total += double.tryParse(
+                                    productData?['Cost']?.toString() ?? '0') ??
+                                0.0;
+                          }
+                        }
+                        return total;
+                      }),
+                      builder: (context, totalSnapshot) {
+                        if (totalSnapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        }
+
+                        final totalAmount = totalSnapshot.data ?? 0.0;
+
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              'Total Amount:',
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              '₹$totalAmount',
+                              style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.green),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  ],
+                );
+              },
+            ),
+            const SizedBox(height: 24),
             Center(
               child: ElevatedButton(
                 onPressed: confirmOrder,

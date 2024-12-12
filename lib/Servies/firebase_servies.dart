@@ -67,6 +67,12 @@ Stream<QuerySnapshot<Map<String, dynamic>>> fetchbuyercartproduct(String docid) 
       .snapshots();
 }
 
+Stream<DocumentSnapshot<Map<String, dynamic>>> fetchbuyerincartproduct(String docid) {
+  return FirebaseFirestore.instance
+      .collection('products')
+      .doc(docid) // Fetch the document by its ID
+      .snapshots();
+}
 
 
   Stream<DocumentSnapshot<Map<String, dynamic>>> fetchbuyersingleProducts(

@@ -120,7 +120,7 @@ class _ProductInfoState extends State<ProductInfo> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: Text(
-                    '\$${cost}',
+                    '\$$cost',
                     style: const TextStyle(
                       fontSize: 20,
                       color: Colors.green,
@@ -130,9 +130,9 @@ class _ProductInfoState extends State<ProductInfo> {
                 const SizedBox(height: 16),
 
                 // Description
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: const Text(
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Text(
                     'Description:',
                     style: TextStyle(
                       fontSize: 18,
