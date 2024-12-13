@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:farmer_auction_app/Servies/firebase_servies.dart';
-// import 'package:farmer_auction_app/Servies/payment.dart';
+import 'package:farmer_auction_app/Servies/payment.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
@@ -291,12 +291,13 @@ class _OdrderplaceState extends State<Odrderplace> {
                                 const SizedBox(height: 16),
                                 ElevatedButton(
                                   onPressed: () {
-                                    // Navigator.push(
-                                    //     context,
-                                    //     MaterialPageRoute(
-                                    //       builder: (context) =>
-                                    //           const Payments(),
-                                    //     ));
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => Payments(
+                                            amount: finalamount,
+                                          ),
+                                        ));
                                   },
                                   child: const Text('Pay Now'),
                                 ),
