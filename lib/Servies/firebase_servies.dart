@@ -44,6 +44,22 @@ class FirebaseauthServies {
 
 // Firebase servies  for buyers
 class Firebasebuyer extends FirebaseauthServies {
+  Future<bool> addorderedproduct(
+      String productid, String productname, String productcost) async {
+    try {
+      await FirebaseFirestore.instance.collection("Oders").add({
+        "ProductID": productid,
+        "Product_name": productname,
+        "Product_cost": productcost
+      });
+      return true;
+    } catch (e) {
+      print("Error in odering: $e");
+      return false;
+    }
+  }
+
+  // add product to cart
   Future<bool> addtocarts(String docId) async {
     try {
       await FirebaseFirestore.instance

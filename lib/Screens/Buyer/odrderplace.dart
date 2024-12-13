@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:farmer_auction_app/Screens/Buyer/home.dart';
 import 'package:farmer_auction_app/Servies/firebase_servies.dart';
 import 'package:farmer_auction_app/Servies/payment.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +19,9 @@ class _OdrderplaceState extends State<Odrderplace> {
   bool isLoadingLocation = false;
 
   double finalamount = 0.0;
+  String productid = "";
+  String productName = "";
+  double productCost = 0.0;
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final Firebasebuyer buyerservices = Firebasebuyer();
@@ -197,10 +201,11 @@ class _OdrderplaceState extends State<Odrderplace> {
                           }
 
                           final productData = productSnapshot.data!.data()!;
-                          final productName = productData['name'] ?? 'No Name';
-                          final productCost = double.tryParse(
+                          productName = productData['name'] ?? 'No Name';
+                          productCost = double.tryParse(
                                   productData['Cost']?.toString() ?? '0') ??
                               0.0;
+                          productid = productData["docID"];
 
                           return ListTile(
                             title: Text(productName),
@@ -327,13 +332,35 @@ class _OdrderplaceState extends State<Odrderplace> {
                                 Text("Total Amount: $finalamount"),
                                 const SizedBox(height: 16),
                                 ElevatedButton(
-                                  onPressed: () {
-                                    // Navigator.push(
-                                    //     context,
-                                    //     MaterialPageRoute(
-                                    //       builder: (context) =>
-                                    //           const Payments(),
-                                    //     ));
+                                  onPressed: () async {
+                                    bool isoderedcom =
+                                      await  buyerservices.addorderedproduct(
+                                            productid,
+                                            productName,
+                                            "$productCost");
+                                    if (isoderedcom) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                          content: Text('Order is conformed'),
+                                          backgroundColor: Colors.green,
+                                        ),
+                                      );
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const Home()));
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                          content:
+                                              Text('Order is not conformed'),
+                                          backgroundColor: Colors.red,
+                                        ),
+                                      );
+                                    }
                                   },
                                   child: const Text('Order Now'),
                                 ),
