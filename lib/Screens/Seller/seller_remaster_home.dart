@@ -1,3 +1,4 @@
+import 'package:farmer_auction_app/Screens/Seller/Orders.dart';
 import 'package:farmer_auction_app/Screens/Seller/Seller_autions.dart';
 import 'package:farmer_auction_app/Screens/Seller/Seller_home.dart';
 import 'package:farmer_auction_app/Screens/Seller/Seller_profile.dart';
@@ -22,6 +23,7 @@ class _SellerRemasterHomeState extends State<SellerRemasterHome> {
     SellerHome(),
     SellerAutions(),
     Addproducts(),
+    Orders(),
     SellerProfile()
   ];
   @override
@@ -64,6 +66,14 @@ class _SellerRemasterHomeState extends State<SellerRemasterHome> {
                     //         0xFF000000),
                   ),
                   label: "Add Products"),
+              BottomNavigationBarItem(
+                  icon: Icon(
+                    Icons.shopping_cart_checkout_rounded,
+                    // color: Color(
+                    //     int.parse("#f5f3ef".substring(1, 7), radix: 16) +
+                    //         0xFF000000),
+                  ),
+                  label: "Orders"),
               BottomNavigationBarItem(
                   icon: Icon(
                     Icons.person_pin,
