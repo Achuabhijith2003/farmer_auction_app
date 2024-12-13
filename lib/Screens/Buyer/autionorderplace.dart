@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:farmer_auction_app/Screens/Buyer/Remasted_home.dart';
 import 'package:farmer_auction_app/Servies/firebase_servies.dart';
 import 'package:farmer_auction_app/Servies/payment.dart';
 import 'package:flutter/material.dart';
@@ -20,8 +21,12 @@ class _AutionorderplaceState extends State<Autionorderplace> {
   String? selectedPaymentMethod;
   String userLocation = "Location not selected";
   bool isLoadingLocation = false;
+  late final Placemark place ;
 
   double finalamount = 0.0;
+  String productid = "";
+  String productName = "";
+  double productCost = 0.0;
 
   // final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final Firebasebuyer buyerservices = Firebasebuyer();
@@ -58,7 +63,7 @@ class _AutionorderplaceState extends State<Autionorderplace> {
           await placemarkFromCoordinates(position.latitude, position.longitude);
 
       if (placemarks.isNotEmpty) {
-        final Placemark place = placemarks.first;
+         place = placemarks.first;
         setState(() {
           userLocation =
               "${place.locality}, ${place.administrativeArea}, ${place.country}";
@@ -255,7 +260,7 @@ class _AutionorderplaceState extends State<Autionorderplace> {
                                 const SizedBox(height: 16),
                                 ElevatedButton(
                                   onPressed: () {
-                                    Navigator.push(
+                                    Navigator.pushReplacement(
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) => Payments(
@@ -291,14 +296,36 @@ class _AutionorderplaceState extends State<Autionorderplace> {
                                 Text("Total Amount: $finalamount"),
                                 const SizedBox(height: 16),
                                 ElevatedButton(
-                                  onPressed: () {
-                                    // Navigator.push(
-                                    //     context,
-                                    //     MaterialPageRoute(
-                                    //       builder: (context) => Payments(
-                                    //         amount: finalamount,
-                                    //       ),
-                                    //     ));
+                                  onPressed: () async {
+                                    bool isoderedcom =
+                                        await buyerservices.addorderedproduct(
+                                            productid,
+                                            productName,
+                                            "$productCost",
+                                            "${place.locality}, ${place.administrativeArea}, ${place.country}",selectedPaymentMethod!);
+                                    if (isoderedcom) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                          content: Text('Order is conformed'),
+                                          backgroundColor: Colors.green,
+                                        ),
+                                      );
+                                      Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const RemastedHome()));
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                          content:
+                                              Text('Order is not conformed'),
+                                          backgroundColor: Colors.red,
+                                        ),
+                                      );
+                                    }
                                   },
                                   child: const Text('Order Now'),
                                 ),

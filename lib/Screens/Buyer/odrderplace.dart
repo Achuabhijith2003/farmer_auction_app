@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:farmer_auction_app/Screens/Buyer/home.dart';
+import 'package:farmer_auction_app/Screens/Buyer/Remasted_home.dart';
 import 'package:farmer_auction_app/Servies/firebase_servies.dart';
 import 'package:farmer_auction_app/Servies/payment.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +17,7 @@ class _OdrderplaceState extends State<Odrderplace> {
   String? selectedPaymentMethod;
   String userLocation = "Location not selected";
   bool isLoadingLocation = false;
+  late final Placemark place;
 
   double finalamount = 0.0;
   String productid = "";
@@ -58,7 +59,7 @@ class _OdrderplaceState extends State<Odrderplace> {
           await placemarkFromCoordinates(position.latitude, position.longitude);
 
       if (placemarks.isNotEmpty) {
-        final Placemark place = placemarks.first;
+        place = placemarks.first;
         setState(() {
           userLocation =
               "${place.locality}, ${place.administrativeArea}, ${place.country}";
@@ -296,7 +297,7 @@ class _OdrderplaceState extends State<Odrderplace> {
                                 const SizedBox(height: 16),
                                 ElevatedButton(
                                   onPressed: () {
-                                    Navigator.push(
+                                    Navigator.pushReplacement(
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) => Payments(
@@ -334,10 +335,12 @@ class _OdrderplaceState extends State<Odrderplace> {
                                 ElevatedButton(
                                   onPressed: () async {
                                     bool isoderedcom =
-                                      await  buyerservices.addorderedproduct(
+                                        await buyerservices.addorderedproduct(
                                             productid,
                                             productName,
-                                            "$productCost");
+                                            "$productCost",
+                                            "${place.locality}, ${place.administrativeArea}, ${place.country}",
+                                            selectedPaymentMethod!);
                                     if (isoderedcom) {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
@@ -346,12 +349,13 @@ class _OdrderplaceState extends State<Odrderplace> {
                                           backgroundColor: Colors.green,
                                         ),
                                       );
-                                      Navigator.push(
+                                      Navigator.pushReplacement(
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                                  const Home()));
+                                                  const RemastedHome()));
                                     } else {
+                                      Navigator.pop(context);
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
                                         const SnackBar(

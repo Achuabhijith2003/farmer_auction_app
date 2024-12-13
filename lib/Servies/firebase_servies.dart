@@ -44,18 +44,44 @@ class FirebaseauthServies {
 
 // Firebase servies  for buyers
 class Firebasebuyer extends FirebaseauthServies {
-  Future<bool> addorderedproduct(
-      String productid, String productname, String productcost) async {
+    Future<bool> addorderedproduct(
+    String productId,
+    String productName,
+    String productCost,
+    String userAddress,
+    String paymentMethods,
+  ) async {
     try {
-      await FirebaseFirestore.instance.collection("Oders").add({
-        "ProductID": productid,
-        "Product_name": productname,
-        "Product_cost": productcost
+      // Fetch the user's profile data
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection("User")
+          .where("UID", isEqualTo: getuserID())
+          .get();
+
+      // Check if user profile exists
+      if (querySnapshot.docs.isEmpty) {
+        print("No user profile found for UID: ${getuserID()}");
+        return false;
+      }
+
+      // Extract the user's profile data
+      final profileData = querySnapshot.docs.first.data();
+
+      // Add the order to the "Orders" collection
+      await FirebaseFirestore.instance.collection("Orders").add({
+        "ProductID": productId,
+        "Product_name": productName,
+        "Product_cost": productCost,
+        "UserID": getuserID(),
+        "Username": profileData["Name"] ?? "Unknown User",
+        "Useraddress": userAddress,
+        "Payment_methods": paymentMethods,
       });
-      return true;
+
+      return true; // Return success
     } catch (e) {
-      print("Error in odering: $e");
-      return false;
+      print("Error in ordering: $e");
+      return false; // Return failure
     }
   }
 
