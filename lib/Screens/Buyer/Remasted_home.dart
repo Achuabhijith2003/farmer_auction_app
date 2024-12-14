@@ -1,7 +1,7 @@
 import 'package:farmer_auction_app/Screens/Buyer/Aution.dart';
 import 'package:farmer_auction_app/Screens/Buyer/Profile.dart';
 import 'package:farmer_auction_app/Screens/Buyer/cart.dart';
-import 'package:farmer_auction_app/Screens/Buyer/flaseSale.dart';
+import 'package:farmer_auction_app/Screens/Buyer/offersale.dart';
 import 'package:farmer_auction_app/Screens/Buyer/home.dart';
 import 'package:flutter/material.dart';
 
