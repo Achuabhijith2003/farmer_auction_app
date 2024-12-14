@@ -24,6 +24,7 @@ class _HomeState extends State<Home> {
   void _updateExpiredProducts() async {
     final snapshot = await buyerservies.fetchbuyerProducts().first;
     for (var doc in snapshot.docs) {
+      print(doc.data());
       final Timestamp productExpire = doc["Expire date"];
       final cost = doc["Cost"] ?? 0.0;
       int number = int.parse(cost);
