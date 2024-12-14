@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class Orders extends StatefulWidget {
   const Orders({super.key});
@@ -29,8 +30,12 @@ class _OrdersState extends State<Orders> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Orders"),
-        backgroundColor: Colors.green,
+        title: Text(
+          "Orders",
+          style: GoogleFonts.aBeeZee(
+              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 27),
+        ),
+        backgroundColor: Colors.red[600],
       ),
       body: FutureBuilder<List<Map<String, dynamic>>>(
         future: fetchOrders(),
@@ -73,7 +78,7 @@ class _OrdersState extends State<Orders> {
                       const SizedBox(height: 8),
                       Text("Buyer Name: ${order['Username'] ?? 'Unknown'}"),
                       const SizedBox(height: 8),
-                      Text("Cost: \$${order['Product_cost'] ?? '0.00'}"),
+                      Text("Cost: ₹${order['Product_cost'] ?? '0.00'}"),
                       const SizedBox(height: 8),
                       Text(
                           "Payment Method: ${order['Payment_methods'] ?? 'Unknown'}"),

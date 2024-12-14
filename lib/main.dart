@@ -35,8 +35,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: true,
-      // home: onboarding ? const Splash() : const OnboardingView(),
-      home: const OnboardingView(),
+      home: onboarding ? const Splash() : const OnboardingView(),
     );
   }
 }

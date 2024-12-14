@@ -43,11 +43,12 @@ class _AutiondetialsState extends State<Autiondetials> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text(
-          'Bidding Details',
-          style: GoogleFonts.dmSerifDisplay(fontSize: 24),
-        ),
-        backgroundColor: Colors.green,
+        title: Text('Bidding Details',
+            style: GoogleFonts.aBeeZee(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 27)),
+        backgroundColor: Colors.red[600],
       ),
       body: Column(
         children: [

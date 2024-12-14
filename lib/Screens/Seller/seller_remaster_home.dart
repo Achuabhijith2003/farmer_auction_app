@@ -4,6 +4,7 @@ import 'package:farmer_auction_app/Screens/Seller/Seller_home.dart';
 import 'package:farmer_auction_app/Screens/Seller/Seller_profile.dart';
 import 'package:farmer_auction_app/Screens/Seller/add_products.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class SellerRemasterHome extends StatefulWidget {
   const SellerRemasterHome({super.key});
@@ -35,12 +36,19 @@ class _SellerRemasterHomeState extends State<SellerRemasterHome> {
         children: [
           BottomNavigationBar(
             selectedFontSize: 20,
-            selectedItemColor: Colors.black,
+            selectedItemColor: Colors.white70,
             enableFeedback: true,
-            backgroundColor: Color(
-                int.parse("#f5f3ef".substring(1, 7), radix: 16) + 0xFF000000),
+            backgroundColor: Colors.red,
             showUnselectedLabels: true,
             type: BottomNavigationBarType.fixed,
+            unselectedLabelStyle: GoogleFonts.aBeeZee(
+                color: Colors.red[600],
+                fontWeight: FontWeight.bold,
+                fontSize: 15),
+            selectedLabelStyle: GoogleFonts.aBeeZee(
+                color: Colors.red[600],
+                fontWeight: FontWeight.bold,
+                fontSize: 17),
             items: const [
               BottomNavigationBarItem(
                   icon: Icon(
@@ -57,7 +65,7 @@ class _SellerRemasterHomeState extends State<SellerRemasterHome> {
                     //     int.parse("#f5f3ef".substring(1, 7), radix: 16) +
                     //         0xFF000000),
                   ),
-                  label: "Aution"),
+                  label: "Auctions"),
               BottomNavigationBarItem(
                   icon: Icon(
                     Icons.add_circle_outline,

@@ -21,7 +21,8 @@ class AddproductsState extends State<Addproducts> {
       TextEditingController();
   final TextEditingController productcostcontroller = TextEditingController();
   List<XFile> _images = [];
-  late DateTime dateTime;
+
+  DateTime dateTime = DateTime.now();
   final ImagePicker _imagePicker = ImagePicker();
 
   Firebaseseller fbseller = Firebaseseller();
@@ -53,155 +54,152 @@ class AddproductsState extends State<Addproducts> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-        child: Scaffold(
-      body: Stack(
-        children: [
-          Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 36, left: 5, right: 5),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    const SizedBox(width: 10),
-                    Text(
-                      "Add Products",
-                      style: GoogleFonts.dmSerifDisplay(
-                          fontSize: 40, letterSpacing: 4),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          Positioned(
-            top: 100,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 15),
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(40),
-                    topRight: Radius.circular(40)),
-              ),
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: buildTextField("Name of the Product",
-                          productnamecontroller, TextInputType.name),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: buildTextField("Description of the Product",
-                          productdescriptioncontroller, TextInputType.text),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: buildTextField("cost of the Product",
-                          productcostcontroller, TextInputType.number),
-                    ),
-                    const SizedBox(height: 10),
-                    ElevatedButton(
-                        onPressed: () {
-                          picker.DatePicker.showDateTimePicker(context,
-                              showTitleActions: true,
-                              minTime: DateTime(2024, 5, 5, 20, 50),
-                              maxTime: DateTime(2030, 6, 7, 05, 09),
-                              onChanged: (date) {
-                            print('change $date in time zone ' +
-                                date.timeZoneOffset.inHours.toString());
-                          }, onConfirm: (date) {
-                            print('confirm $date');
-                            setState(() {
-                              dateTime = date;
-                            });
-                          }, currentTime: DateTime(2024, 12, 31, 23, 12, 34));
-                        },
-                        child: Text("Select Expire date and time")),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          "Add products",
+          style: GoogleFonts.aBeeZee(
+              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 27),
+        ),
+        backgroundColor: Colors.red[600],
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: buildTextField("Name of the Product",
+                  productnamecontroller, TextInputType.name),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: buildTextField("Description of the Product",
+                  productdescriptioncontroller, TextInputType.text),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: buildTextField("cost of the Product",
+                  productcostcontroller, TextInputType.number),
+            ),
+            const SizedBox(height: 15),
+            Text("Expire date and time: $dateTime"),
+            const SizedBox(height: 10,),
+            Container(
+              decoration: BoxDecoration(
+                  color: Colors.red, borderRadius: BorderRadius.circular(12)),
+              child: TextButton(
+                  onPressed: () {
+                    picker.DatePicker.showDateTimePicker(context,
+                        showTitleActions: true,
+                        minTime: DateTime(2024, 5, 5, 20, 50),
+                        maxTime: DateTime(2030, 6, 7, 05, 09),
+                        onChanged: (date) {
+                      print('change $date in time zone ' +
+                          date.timeZoneOffset.inHours.toString());
+                    }, onConfirm: (date) {
+                      print('confirm $date');
+                      setState(() {
+                        dateTime = date;
+                      });
+                    }, currentTime: DateTime(2024, 12, 31, 23, 12, 34));
+                  },
+                  child: Text("Select Expire Date and Time",
+                      style: GoogleFonts.aBeeZee(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18))),
+            ),
 
-                    // Image Picker Section
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "Add Product Images (Min: 2, Max: 4)",
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(height: 10),
-                          // Display selected images
-                          Wrap(
-                            children: _images.map((image) {
-                              return Padding(
-                                padding: const EdgeInsets.all(4.0),
-                                child: Stack(
-                                  children: [
-                                    // The image
-                                    Image.file(
-                                      File(image.path),
-                                      width: 80,
-                                      height: 80,
-                                      fit: BoxFit.cover,
-                                    ),
-                                    // The delete button
-                                    Positioned(
-                                      top: 0,
-                                      right: 0,
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          setState(() {
-                                            _images.remove(
-                                                image); // Remove the selected image
-                                          });
-                                        },
-                                        child: Container(
-                                          width: 24,
-                                          height: 24,
-                                          decoration: const BoxDecoration(
-                                            color: Colors.red,
-                                            shape: BoxShape.circle,
-                                          ),
-                                          child: const Icon(
-                                            Icons.close,
-                                            color: Colors.white,
-                                            size: 16,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            }).toList(),
-                          ),
-
-                          const SizedBox(height: 10),
-                          // Add Image Button
-                          MaterialButton(
-                            onPressed: _pickImages,
-                            height: 50,
-                            color: Colors.grey[900],
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(50),
+            // Image Picker Section
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    "Add Product Images (Min: 2, Max: 4)",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 10),
+                  // Display selected images
+                  Wrap(
+                    children: _images.map((image) {
+                      return Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: Stack(
+                          children: [
+                            // The image
+                            Image.file(
+                              File(image.path),
+                              width: 80,
+                              height: 80,
+                              fit: BoxFit.cover,
                             ),
-                            child: const Center(
-                              child: Text(
-                                "Add Image",
-                                style: TextStyle(
+                            // The delete button
+                            Positioned(
+                              top: 0,
+                              right: 0,
+                              child: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    _images.remove(
+                                        image); // Remove the selected image
+                                  });
+                                },
+                                child: Container(
+                                  width: 24,
+                                  height: 24,
+                                  decoration: const BoxDecoration(
+                                    color: Colors.red,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: const Icon(
+                                    Icons.close,
                                     color: Colors.white,
-                                    fontWeight: FontWeight.bold),
+                                    size: 16,
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
-                          const SizedBox(height: 10),
-                          MaterialButton(
+                          ],
+                        ),
+                      );
+                    }).toList(),
+                  ),
+
+                  const SizedBox(height: 10),
+                  // Add Image Button
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.only(),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            color: Colors.red[700]),
+                        width: MediaQuery.of(context).size.width * .9,
+                        height: 55,
+                        child: TextButton(
+                          onPressed: _pickImages,
+                          child: Text("Add Images",
+                              style: GoogleFonts.aBeeZee(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18)),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.only(),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            color: Colors.red[700]),
+                        width: MediaQuery.of(context).size.width * .9,
+                        height: 55,
+                        child: TextButton(
                             onPressed: () async {
                               // Ensure at least 2 images are selected
                               if (_images.length < 2) {
@@ -226,7 +224,8 @@ class AddproductsState extends State<Addproducts> {
                                     productName,
                                     ProductDIscrption,
                                     ProductCost,
-                                    _images,dateTime);
+                                    _images,
+                                    dateTime);
                                 if (await issucess) {
                                   setState(() {
                                     _images = [];
@@ -253,30 +252,20 @@ class AddproductsState extends State<Addproducts> {
                                   "Description: ${productdescriptioncontroller.text}");
                               print("Images Count: ${_images.length}");
                             },
-                            height: 50,
-                            color: Colors.grey[900],
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(50),
-                            ),
-                            child: const Center(
-                              child: Text(
-                                "Submit Product",
-                                style: TextStyle(
+                            child: Text("Submit Product",
+                                style: GoogleFonts.aBeeZee(
                                     color: Colors.white,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          ),
-                        ],
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18))),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-    ));
+    );
   }
 }

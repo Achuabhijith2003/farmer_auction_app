@@ -19,7 +19,7 @@ class _AddAuctionState extends State<AddAuction> {
   final TextEditingController productNameController = TextEditingController();
   final TextEditingController startingPriceController = TextEditingController();
 
-  late DateTime dates;
+  late DateTime dateTime = DateTime.now();
   final List<File> selectedImages = [];
   final Imagepicker = ImagePicker();
   Firebaseseller sellerbase = Firebaseseller();
@@ -55,7 +55,7 @@ class _AddAuctionState extends State<AddAuction> {
   void createAuction() async {
     String productName = productNameController.text.trim();
     double startingPrice = double.tryParse(startingPriceController.text) ?? 0.0;
-    DateTime endTime = dates;
+    DateTime endTime = dateTime;
     // DateTime.tryParse(dates) ?? DateTime.now();
 
     if (productName.isEmpty ||
@@ -114,102 +114,117 @@ class _AddAuctionState extends State<AddAuction> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(children: [
-        Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 36, left: 5, right: 5),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  const SizedBox(width: 10),
-                  Text(
-                    "Add Auction",
-                    style: GoogleFonts.dmSerifDisplay(
-                        fontSize: 40, letterSpacing: 4),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
-            ),
-          ],
+      appBar: AppBar(
+        title: Text(
+          "Create Auctions",
+          style: GoogleFonts.aBeeZee(
+              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 27),
         ),
-        Positioned(
-          top: 100,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 15),
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(40),
-                topRight: Radius.circular(40),
+        backgroundColor: Colors.red[600],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              TextField(
+                controller: productNameController,
+                decoration: const InputDecoration(labelText: 'Product Name'),
               ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    TextField(
-                      controller: productNameController,
-                      decoration:
-                          const InputDecoration(labelText: 'Product Name'),
-                    ),
-                    TextField(
-                      controller: startingPriceController,
-                      decoration:
-                          const InputDecoration(labelText: 'Starting Price'),
-                      keyboardType: TextInputType.number,
-                    ),
-                    ElevatedButton(
-                        onPressed: () {
-                          picker.DatePicker.showDateTimePicker(context,
-                              showTitleActions: true,
-                              minTime: DateTime(2024, 5, 5, 20, 50),
-                              maxTime: DateTime(2030, 6, 7, 05, 09),
-                              onChanged: (date) {
-                            print('change $date in time zone ' +
-                                date.timeZoneOffset.inHours.toString());
-                          }, onConfirm: (date) {
-                            setState(() {
-                              dates = date;
-                            });
-                            print('confirm $date');
-                          }, currentTime: DateTime(2024, 12, 31, 23, 12, 34));
-                        },
-                        child: Text("Select Expire date and time")),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
+              TextField(
+                controller: startingPriceController,
+                decoration: const InputDecoration(labelText: 'Starting Price'),
+                keyboardType: TextInputType.number,
+              ),
+              const SizedBox(height: 15),
+              Text("Expire date and time: $dateTime"),
+              const SizedBox(
+                height: 10,
+              ),
+              Container(
+                decoration: BoxDecoration(
+                    color: Colors.red, borderRadius: BorderRadius.circular(12)),
+                child: TextButton(
+                    onPressed: () {
+                      picker.DatePicker.showDateTimePicker(context,
+                          showTitleActions: true,
+                          minTime: DateTime(2024, 5, 5, 20, 50),
+                          maxTime: DateTime(2030, 6, 7, 05, 09),
+                          onChanged: (date) {
+                        print('change $date in time zone ' +
+                            date.timeZoneOffset.inHours.toString());
+                      }, onConfirm: (date) {
+                        print('confirm $date');
+                        setState(() {
+                          dateTime = date;
+                        });
+                      }, currentTime: DateTime(2024, 12, 31, 23, 12, 34));
+                    },
+                    child: Text("Select Expire Date and Time",
+                        style: GoogleFonts.aBeeZee(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18))),
+              ),
+              const SizedBox(height: 20),
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.only(),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        color: Colors.red[700]),
+                    width: MediaQuery.of(context).size.width * .9,
+                    height: 55,
+                    child: TextButton(
                       onPressed: pickImage,
-                      child: const Text('Upload Images'),
+                      child: Text("Add Images",
+                          style: GoogleFonts.aBeeZee(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18)),
                     ),
-                    const SizedBox(height: 10),
-                    Wrap(
-                      spacing: 10,
-                      runSpacing: 10,
-                      children: selectedImages
-                          .map((image) => Image.file(
-                                image,
-                                width: 100,
-                                height: 100,
-                                fit: BoxFit.cover,
-                              ))
-                          .toList(),
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: createAuction,
-                      child: const Text('Create Auction'),
-                    ),
-                  ],
+                  ),
                 ),
               ),
-            ),
+              const SizedBox(height: 10),
+              Wrap(
+                spacing: 10,
+                runSpacing: 10,
+                children: selectedImages
+                    .map((image) => Image.file(
+                          image,
+                          width: 100,
+                          height: 100,
+                          fit: BoxFit.cover,
+                        ))
+                    .toList(),
+              ),
+              const SizedBox(height: 20),
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.only(),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        color: Colors.red[700]),
+                    width: MediaQuery.of(context).size.width * .9,
+                    height: 55,
+                    child: TextButton(
+                      onPressed: createAuction,
+                      child: Text("Add Images",
+                          style: GoogleFonts.aBeeZee(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18)),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
-      ]),
+      ),
     );
   }
 }
