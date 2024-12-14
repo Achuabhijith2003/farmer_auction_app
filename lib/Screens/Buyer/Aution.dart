@@ -64,6 +64,9 @@ class _AutionState extends State<Aution> {
                         itemCount: auctions.length,
                         itemBuilder: (context, index) {
                           final auction = auctions[index];
+                          final imageUrl =
+                              (auction['images'] as List<dynamic>?)?.first ??
+                                  '';
                           final checktimedate =
                               operations.checkDateandTime(auction["endTime"]);
                           for (var i = 0; i < auctions.length; i++) {
@@ -77,12 +80,12 @@ class _AutionState extends State<Aution> {
 
                           return Card(
                             child: ListTile(
-                              // leading: Image.network(
-                              //   auction['imageUrl'],
-                              //   width: 60,
-                              //   height: 60,
-                              //   fit: BoxFit.cover,
-                              // ),
+                              leading: Image.network(
+                                imageUrl,
+                                width: 60,
+                                height: 60,
+                                fit: BoxFit.cover,
+                              ),
                               title: Text(auction['productName']),
                               subtitle: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -143,6 +146,9 @@ class _AutionState extends State<Aution> {
                         itemCount: auctions.length,
                         itemBuilder: (context, index) {
                           final auction = auctions[index];
+                          final imageUrl =
+                              (auction['images'] as List<dynamic>?)?.first ??
+                                  '';
                           final checktimedate =
                               operations.checkDateandTime(auction["endTime"]);
                           for (var i = 0; i < auctions.length; i++) {
@@ -156,12 +162,12 @@ class _AutionState extends State<Aution> {
 
                           return Card(
                             child: ListTile(
-                              // leading: Image.network(
-                              //   auction['imageUrl'],
-                              //   width: 60,
-                              //   height: 60,
-                              //   fit: BoxFit.cover,
-                              // ),
+                              leading: Image.network(
+                                imageUrl,
+                                width: 60,
+                                height: 60,
+                                fit: BoxFit.cover,
+                              ),
                               title: Text(auction['productName']),
                               subtitle: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,

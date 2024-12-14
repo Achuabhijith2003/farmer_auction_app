@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:farmer_auction_app/Servies/firebase_servies.dart';
 
 class ProductCartInfo extends StatefulWidget {
-    final String productId;
- 
+  final String productId;
+
   const ProductCartInfo({super.key, required this.productId});
 
   @override
@@ -12,13 +12,16 @@ class ProductCartInfo extends StatefulWidget {
 }
 
 class _ProductCartInfoState extends State<ProductCartInfo> {
- final Firebasebuyer buyerServices = Firebasebuyer();
+  final Firebasebuyer buyerServices = Firebasebuyer();
   final TextEditingController productqantiycontroller = TextEditingController();
 
-   Future<void> removeFromCart(String cartItemId) async {
+  Future<void> removeFromCart(String cartItemId) async {
     try {
       print('Attempting to remove cart item: $cartItemId'); // Debug log
-      await FirebaseFirestore.instance.collection('cart').doc(cartItemId).delete();
+      await FirebaseFirestore.instance
+          .collection('cart')
+          .doc(cartItemId)
+          .delete();
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Item removed from cart!'),
@@ -75,7 +78,7 @@ class _ProductCartInfoState extends State<ProductCartInfo> {
           final cost = product?['Cost'] ?? 0.0;
           final description =
               product?['description'] ?? 'No description available.';
-          
+
           final images = (product?['images'] as List<dynamic>?) ?? [];
 
           return SingleChildScrollView(
@@ -122,7 +125,7 @@ class _ProductCartInfoState extends State<ProductCartInfo> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: Text(
-                    '\$$cost',
+                    '₹$cost',
                     style: const TextStyle(
                       fontSize: 20,
                       color: Colors.green,
@@ -151,9 +154,8 @@ class _ProductCartInfoState extends State<ProductCartInfo> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text("Quality:")
-                ),
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text("Quality:")),
                 const SizedBox(height: 16),
 
                 // Add to Cart Button

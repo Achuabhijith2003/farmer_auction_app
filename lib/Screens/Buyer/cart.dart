@@ -134,7 +134,7 @@ class _CartState extends State<Cart> {
                               style:
                                   const TextStyle(fontWeight: FontWeight.bold),
                             ),
-                            subtitle: Text('\$$productCost'),
+                            subtitle: Text('₹$productCost'),
                             trailing: IconButton(
                               icon: const Icon(Icons.delete, color: Colors.red),
                               onPressed: () {
@@ -146,15 +146,16 @@ class _CartState extends State<Cart> {
                             onTap: () {
                               print(
                                   'Navigating to ProductInfo for: $cartProductId'); // Debug log
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => ProductInfo(
-                                    productId: cartProductId,
-                                    cost: productCost,
-                                  ),
-                                ),
-                              );
+                              // Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(
+                              //     builder: (context) => ProductInfo(
+                              //       productId: cartProductId,
+                              //       cost: productCost,
+                              //       orginalcost: "",
+                              //     ),
+                              //   ),
+                              // );
                             },
                           ),
                         );

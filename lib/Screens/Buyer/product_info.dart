@@ -1,11 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:farmer_auction_app/Servies/firebase_servies.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class ProductInfo extends StatefulWidget {
   final String productId;
   final String cost;
-  const ProductInfo({super.key, required this.productId, required this.cost});
+  final String orginalcost;
+  const ProductInfo({super.key, required this.productId, required this.cost, required this.orginalcost});
 
   @override
   State<ProductInfo> createState() => _ProductInfoState();
@@ -44,8 +46,12 @@ class _ProductInfoState extends State<ProductInfo> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Product Details'),
-        backgroundColor: Colors.green,
+        title: Text('Product Details',
+            style: GoogleFonts.aBeeZee(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 27)),
+        backgroundColor: Colors.green[700],
       ),
       body: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
         stream: buyerServices.fetchbuyersingleProducts(widget.productId),
@@ -121,16 +127,23 @@ class _ProductInfoState extends State<ProductInfo> {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Text(
-                    '\$ ${widget.cost}',
-                    style: const TextStyle(
-                      fontSize: 20,
-                      color: Colors.green,
-                    ),
-                  ),
+                  child: (widget.cost == "")
+                      ? Text(
+                          '₹${widget.orginalcost}',
+                          style: const TextStyle(
+                            fontSize: 20,
+                            color: Colors.green,
+                          ),
+                        )
+                      : Text(
+                          '₹${widget.cost}',
+                          style: const TextStyle(
+                            fontSize: 20,
+                            color: Colors.green,
+                          ),
+                        ),
                 ),
                 const SizedBox(height: 16),
-
                 // Description
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16.0),
@@ -151,24 +164,25 @@ class _ProductInfoState extends State<ProductInfo> {
                   ),
                 ),
                 const SizedBox(height: 16),
-
                 // Add to Cart Button
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton.icon(
-                      onPressed: () {
-                        print(
-                            'Add to Cart button pressed for productId: ${widget.productId}'); // Debug log
-                        addToCart(widget.productId);
-                      },
-                      icon: const Icon(Icons.shopping_cart),
-                      label: const Text('Add to Cart'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                      ),
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          color: Colors.green[700]),
+                      width: MediaQuery.of(context).size.width * .9,
+                      height: 55,
+                      child: TextButton(
+                          onPressed: () {
+                            addToCart(widget.productId);
+                          },
+                          child: Text("Add to Cart",
+                              style: GoogleFonts.aBeeZee(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18))),
                     ),
                   ),
                 ),

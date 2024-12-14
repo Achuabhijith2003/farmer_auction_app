@@ -107,6 +107,7 @@ class _FlasesaleState extends State<Flasesale> {
                               builder: (context) => ProductInfo(
                                 productId: product.id,
                                 cost: cost,
+                                orginalcost: "",
                               ), // Pass productId
                             ),
                           );
@@ -158,7 +159,7 @@ class _FlasesaleState extends State<Flasesale> {
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
-                                      '\$${cost.toString()}',
+                                      '₹${cost.toString()}',
                                       style: const TextStyle(
                                         fontSize: 14,
                                         color: Colors.green,

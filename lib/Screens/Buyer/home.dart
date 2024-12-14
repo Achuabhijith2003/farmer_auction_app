@@ -141,6 +141,7 @@ class _HomeState extends State<Home> {
                               builder: (context) => ProductInfo(
                                 productId: product.id,
                                 cost: "$offerCost",
+                                orginalcost: cost,
                               ),
                             ),
                           );
