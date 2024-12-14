@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:farmer_auction_app/Servies/firebase_servies.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -10,11 +11,15 @@ class Orders extends StatefulWidget {
 }
 
 class _OrdersState extends State<Orders> {
+  Firebaseseller sellerservies = Firebaseseller();
+
   // Fetch orders from Firestore
   Future<List<Map<String, dynamic>>> fetchOrders() async {
     try {
-      final querySnapshot =
-          await FirebaseFirestore.instance.collection("Orders").get();
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection("Orders")
+          .where("Seller_id", isEqualTo: sellerservies.getuserID())
+          .get(); // Use get() for one-time fetch
 
       // Convert documents to a list of maps
       return querySnapshot.docs
@@ -76,9 +81,12 @@ class _OrdersState extends State<Orders> {
                         ),
                       ),
                       const SizedBox(height: 8),
-                      Text("Buyer Name: ${order['Username'] ?? 'Unknown'}"),
+                      Text("Buyer Name: ${order['Buyyer Name'] ?? 'Unknown'}"),
                       const SizedBox(height: 8),
                       Text("Cost: ₹${order['Product_cost'] ?? '0.00'}"),
+                      const SizedBox(height: 8),
+                      Text(
+                          "Buyyer Address: ${order['Buyyer address'] ?? 'Unknown'}"),
                       const SizedBox(height: 8),
                       Text(
                           "Payment Method: ${order['Payment_methods'] ?? 'Unknown'}"),

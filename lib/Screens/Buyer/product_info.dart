@@ -20,7 +20,7 @@ class ProductInfo extends StatefulWidget {
 class _ProductInfoState extends State<ProductInfo> {
   final Firebasebuyer buyerServices = Firebasebuyer();
 
-  void addToCart(String productId) async {
+  void addToCart(String productId, String sellerid,String name) async {
     print('Adding product to cart: $productId'); // Debug log
     bool isoffer = true;
     if (widget.cost == "") {
@@ -29,7 +29,7 @@ class _ProductInfoState extends State<ProductInfo> {
 
     // Implementation for adding the product to the cart
     final iscarted = await buyerServices.addtocarts(
-        widget.productId, widget.cost, widget.orginalcost, isoffer);
+        widget.productId, widget.cost, widget.orginalcost, isoffer,sellerid,name);
     if (iscarted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -91,6 +91,7 @@ class _ProductInfoState extends State<ProductInfo> {
           final description =
               product?['description'] ?? 'No description available.';
           final images = (product?['images'] as List<dynamic>?) ?? [];
+          final sellerid = product?["UID"];
 
           return SingleChildScrollView(
             child: Column(
@@ -184,7 +185,7 @@ class _ProductInfoState extends State<ProductInfo> {
                       height: 55,
                       child: TextButton(
                           onPressed: () {
-                            addToCart(widget.productId);
+                            addToCart(widget.productId,sellerid,name);
                           },
                           child: Text("Add to Cart",
                               style: GoogleFonts.aBeeZee(

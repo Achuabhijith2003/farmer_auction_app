@@ -18,6 +18,7 @@ class _OdrderplaceState extends State<Odrderplace> {
   String userLocation = "Location not selected";
   bool isLoadingLocation = false;
   late final Placemark place;
+  String sellerids = "";
 
   double finalamount = 0.0;
   String productid = "";
@@ -184,6 +185,14 @@ class _OdrderplaceState extends State<Odrderplace> {
                     ...cartItems.map((item) {
                       final productDocId = item['DocID'];
                       final productcosts = item["Product_cost"];
+                      final productorginalcosts = item["OrginalCost"];
+                      final isoffer = item["isoffer"];
+                      final productnameietm=item["Product_name"];
+                      final String sellerid = item["SEllerID"];
+                      sellerids = sellerid;
+                      productid = productDocId;
+                      productName = productnameietm;
+
 
                       return StreamBuilder<
                           DocumentSnapshot<Map<String, dynamic>>>(
@@ -210,12 +219,18 @@ class _OdrderplaceState extends State<Odrderplace> {
                           productid = productData["docID"];
 
                           return ListTile(
-                            title: Text(productName),
-                            trailing: Text(
-                              '₹$productCost',
-                              style: const TextStyle(color: Colors.green),
-                            ),
-                          );
+                              title: Text(productName),
+                              trailing: (isoffer)
+                                  ? Text(
+                                      '₹$productCost',
+                                      style:
+                                          const TextStyle(color: Colors.green),
+                                    )
+                                  : Text(
+                                      '₹$productorginalcosts',
+                                      style:
+                                          const TextStyle(color: Colors.green),
+                                    ));
                         },
                       );
                     }).toList(),
@@ -228,12 +243,14 @@ class _OdrderplaceState extends State<Odrderplace> {
                               .collection('products')
                               .doc(item['DocID'])
                               .get();
-
                           if (productDoc.exists) {
                             final productData = productDoc.data();
                             total += double.tryParse(
                                     productData?['Offers_cost']?.toString() ??
                                         '0') ??
+                                0.0;
+                            total += double.tryParse(
+                                    productData?['Cost']?.toString() ?? '0') ??
                                 0.0;
                           }
                         }
@@ -264,6 +281,139 @@ class _OdrderplaceState extends State<Odrderplace> {
                                   fontWeight: FontWeight.bold,
                                   color: Colors.green),
                             ),
+                            const SizedBox(height: 24),
+                            Center(
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  if (confirmOrder()) {
+                                    if (selectedPaymentMethod ==
+                                        "UPI Payment") {
+                                      showModalBottomSheet(
+                                        context: context,
+                                        builder: (context) {
+                                          return Container(
+                                            padding: const EdgeInsets.all(16),
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                const Text(
+                                                  'Order Details',
+                                                  style: TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                                const SizedBox(height: 8),
+                                                Text('Location: $userLocation'),
+                                                Text(
+                                                    'Payment Method: $selectedPaymentMethod '),
+                                                Text(
+                                                    "Total Amount: $finalamount"),
+                                                const SizedBox(height: 16),
+                                                ElevatedButton(
+                                                  onPressed: () {
+                                                    Navigator.pushReplacement(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              Payments(
+                                                            amount: finalamount,
+                                                          ),
+                                                        ));
+                                                  },
+                                                  child: const Text('Pay Now'),
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        },
+                                      );
+                                    } else {
+                                      showModalBottomSheet(
+                                        context: context,
+                                        builder: (context) {
+                                          return Container(
+                                            padding: const EdgeInsets.all(16),
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                const Text(
+                                                  'Order Details',
+                                                  style: TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                                const SizedBox(height: 8),
+                                                Text('Location: $userLocation'),
+                                                Text(
+                                                    'Payment Method: $selectedPaymentMethod '),
+                                                Text(
+                                                    "Total Amount: $finalamount"),
+                                                const SizedBox(height: 16),
+                                                ElevatedButton(
+                                                  onPressed: () async {
+                                                    bool isoderedcom =
+                                                        await buyerservices
+                                                            .addorderedproduct(
+                                                                productid,
+                                                                productName,
+                                                                "$productCost",
+                                                                "${place.locality}, ${place.administrativeArea}, ${place.country}",
+                                                                selectedPaymentMethod!,
+                                                                sellerids);
+                                                    if (isoderedcom) {
+                                                      ScaffoldMessenger.of(
+                                                              context)
+                                                          .showSnackBar(
+                                                        const SnackBar(
+                                                          content: Text(
+                                                              'Order is conformed'),
+                                                          backgroundColor:
+                                                              Colors.green,
+                                                        ),
+                                                      );
+                                                      Navigator.pushReplacement(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder: (context) =>
+                                                                  const RemastedHome()));
+                                                    } else {
+                                                      Navigator.pop(context);
+                                                      ScaffoldMessenger.of(
+                                                              context)
+                                                          .showSnackBar(
+                                                        const SnackBar(
+                                                          content: Text(
+                                                              'Order is not conformed'),
+                                                          backgroundColor:
+                                                              Colors.red,
+                                                        ),
+                                                      );
+                                                    }
+                                                  },
+                                                  child:
+                                                      const Text('Order Now'),
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        },
+                                      );
+                                    }
+                                  }
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.green,
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 16.0, horizontal: 24.0),
+                                ),
+                                child: const Text(
+                                  'Confirm Order',
+                                  style: TextStyle(fontSize: 18),
+                                ),
+                              ),
+                            ),
                           ],
                         );
                       },
@@ -271,123 +421,6 @@ class _OdrderplaceState extends State<Odrderplace> {
                   ],
                 );
               },
-            ),
-            const SizedBox(height: 24),
-            Center(
-              child: ElevatedButton(
-                onPressed: () {
-                  if (confirmOrder()) {
-                    if (selectedPaymentMethod == "UPI Payment") {
-                      showModalBottomSheet(
-                        context: context,
-                        builder: (context) {
-                          return Container(
-                            padding: const EdgeInsets.all(16),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const Text(
-                                  'Order Details',
-                                  style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                const SizedBox(height: 8),
-                                Text('Location: $userLocation'),
-                                Text('Payment Method: $selectedPaymentMethod '),
-                                Text("Total Amount: $finalamount"),
-                                const SizedBox(height: 16),
-                                ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.pushReplacement(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => Payments(
-                                            amount: finalamount,
-                                          ),
-                                        ));
-                                  },
-                                  child: const Text('Pay Now'),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      );
-                    } else {
-                      showModalBottomSheet(
-                        context: context,
-                        builder: (context) {
-                          return Container(
-                            padding: const EdgeInsets.all(16),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const Text(
-                                  'Order Details',
-                                  style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                const SizedBox(height: 8),
-                                Text('Location: $userLocation'),
-                                Text('Payment Method: $selectedPaymentMethod '),
-                                Text("Total Amount: $finalamount"),
-                                const SizedBox(height: 16),
-                                ElevatedButton(
-                                  onPressed: () async {
-                                    bool isoderedcom =
-                                        await buyerservices.addorderedproduct(
-                                            productid,
-                                            productName,
-                                            "$productCost",
-                                            "${place.locality}, ${place.administrativeArea}, ${place.country}",
-                                            selectedPaymentMethod!);
-                                    if (isoderedcom) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        const SnackBar(
-                                          content: Text('Order is conformed'),
-                                          backgroundColor: Colors.green,
-                                        ),
-                                      );
-                                      Navigator.pushReplacement(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const RemastedHome()));
-                                    } else {
-                                      Navigator.pop(context);
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        const SnackBar(
-                                          content:
-                                              Text('Order is not conformed'),
-                                          backgroundColor: Colors.red,
-                                        ),
-                                      );
-                                    }
-                                  },
-                                  child: const Text('Order Now'),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      );
-                    }
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 16.0, horizontal: 24.0),
-                ),
-                child: const Text(
-                  'Confirm Order',
-                  style: TextStyle(fontSize: 18),
-                ),
-              ),
             ),
           ],
         ),

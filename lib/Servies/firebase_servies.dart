@@ -45,12 +45,12 @@ class FirebaseauthServies {
 // Firebase servies  for buyers
 class Firebasebuyer extends FirebaseauthServies {
   Future<bool> addorderedproduct(
-    String productId,
-    String productName,
-    String productCost,
-    String userAddress,
-    String paymentMethods,
-  ) async {
+      String productId,
+      String productName,
+      String productCost,
+      String userAddress,
+      String paymentMethods,
+      String Sellerid) async {
     try {
       // Fetch the user's profile data
       final querySnapshot = await FirebaseFirestore.instance
@@ -67,16 +67,28 @@ class Firebasebuyer extends FirebaseauthServies {
       // Extract the user's profile data
       final profileData = querySnapshot.docs.first.data();
 
-      // Add the order to the "Orders" collection
-      await FirebaseFirestore.instance.collection("Orders").add({
-        "ProductID": productId,
-        "Product_name": productName,
-        "Product_cost": productCost,
-        "UserID": getuserID(),
-        "Username": profileData["Name"] ?? "Unknown User",
-        "Useraddress": userAddress,
-        "Payment_methods": paymentMethods,
-      });
+      final querySnapshotcart = await FirebaseFirestore.instance
+          .collection("cart")
+          .where("UserID", isEqualTo: getuserID())
+          .get();
+
+      for (var doc in querySnapshotcart.docs) {
+        // Add the order to the "Orders" collection
+        await FirebaseFirestore.instance.collection("Orders").add({
+          "ProductID": productId,
+          "Product_name": productName,
+          "Product_cost": productCost,
+          "UserID": getuserID(),
+          "Buyyer Name": profileData["Name"] ?? "Unknown User",
+          "Buyyer address": userAddress,
+          "Payment_methods": paymentMethods,
+          "Seller_id": Sellerid
+        });
+        await FirebaseFirestore.instance
+            .collection("cart")
+            .doc(doc.id)
+            .delete();
+      }
 
       return true; // Return success
     } catch (e) {
@@ -89,15 +101,17 @@ class Firebasebuyer extends FirebaseauthServies {
   checkexpire(String productid, Timestamp productexpiretimedate) {}
 
   // add product to cart
-  Future<bool> addtocarts(
-      String docId, String cost, String orginalCost, bool isoffer) async {
+  Future<bool> addtocarts(String docId, String cost, String orginalCost,
+      bool isoffer, String sellerid,String productName) async {
     try {
       await FirebaseFirestore.instance.collection("cart").add({
         "DocID": docId,
         "UserID": getuserID(),
         "Product_cost": cost,
         "OrginalCost": orginalCost,
-        "isoffer": isoffer
+        "isoffer": isoffer,
+        "SEllerID": sellerid,
+        "Product_name":productName
       });
       return true;
     } catch (e) {
