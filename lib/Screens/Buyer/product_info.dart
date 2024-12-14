@@ -4,7 +4,8 @@ import 'package:farmer_auction_app/Servies/firebase_servies.dart';
 
 class ProductInfo extends StatefulWidget {
   final String productId;
-  const ProductInfo({super.key, required this.productId});
+  final String cost;
+  const ProductInfo({super.key, required this.productId, required this.cost});
 
   @override
   State<ProductInfo> createState() => _ProductInfoState();
@@ -120,7 +121,7 @@ class _ProductInfoState extends State<ProductInfo> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: Text(
-                    '\$$cost',
+                    '\$ ${widget.cost}',
                     style: const TextStyle(
                       fontSize: 20,
                       color: Colors.green,

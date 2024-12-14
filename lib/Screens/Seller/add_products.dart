@@ -21,6 +21,7 @@ class AddproductsState extends State<Addproducts> {
       TextEditingController();
   final TextEditingController productcostcontroller = TextEditingController();
   List<XFile> _images = [];
+  late DateTime dateTime;
   final ImagePicker _imagePicker = ImagePicker();
 
   Firebaseseller fbseller = Firebaseseller();
@@ -117,6 +118,9 @@ class AddproductsState extends State<Addproducts> {
                                 date.timeZoneOffset.inHours.toString());
                           }, onConfirm: (date) {
                             print('confirm $date');
+                            setState(() {
+                              dateTime = date;
+                            });
                           }, currentTime: DateTime(2024, 12, 31, 23, 12, 34));
                         },
                         child: Text("Select Expire date and time")),
@@ -222,7 +226,7 @@ class AddproductsState extends State<Addproducts> {
                                     productName,
                                     ProductDIscrption,
                                     ProductCost,
-                                    _images);
+                                    _images,dateTime);
                                 if (await issucess) {
                                   setState(() {
                                     _images = [];

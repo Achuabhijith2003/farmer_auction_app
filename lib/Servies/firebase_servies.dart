@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class FirebaseauthServies {
@@ -45,7 +44,7 @@ class FirebaseauthServies {
 
 // Firebase servies  for buyers
 class Firebasebuyer extends FirebaseauthServies {
-    Future<bool> addorderedproduct(
+  Future<bool> addorderedproduct(
     String productId,
     String productName,
     String productCost,
@@ -87,9 +86,7 @@ class Firebasebuyer extends FirebaseauthServies {
   }
 
   // check the product before expire
-  checkexpire(String productid,Timestamp productexpiretimedate){
-
-  }
+  checkexpire(String productid, Timestamp productexpiretimedate) {}
 
   // add product to cart
   Future<bool> addtocarts(String docId) async {
@@ -137,7 +134,17 @@ class Firebasebuyer extends FirebaseauthServies {
   }
 
   Stream<QuerySnapshot> fetchbuyerProducts() {
-    return FirebaseFirestore.instance.collection('products').snapshots();
+    return FirebaseFirestore.instance
+        .collection('products')
+        .where("flase_sale", isEqualTo: false)
+        .snapshots();
+  }
+
+  Stream<QuerySnapshot> fetchbuyerofferProducts() {
+    return FirebaseFirestore.instance
+        .collection('products')
+        .where("flase_sale", isEqualTo: true)
+        .snapshots();
   }
 
   Stream<DocumentSnapshot<Map<String, dynamic>>> fetchautiondetails(
@@ -212,7 +219,7 @@ class Firebasebuyer extends FirebaseauthServies {
 class Firebaseseller extends FirebaseauthServies {
   // add products
   Future<bool> addproducts(String productName, String productDescription,
-      String Productcost, List<XFile> images) async {
+      String Productcost, List<XFile> images, DateTime datetime) async {
     try {
       // Step 1: Validate Inputs
       if (productName.isEmpty || productDescription.isEmpty || images.isEmpty) {
@@ -242,7 +249,10 @@ class Firebaseseller extends FirebaseauthServies {
         "images": imageUrls,
         "timestamp": FieldValue.serverTimestamp(),
         "UID": getuserID(),
-        "sold": true
+        "sold": true,
+        "Expire date": datetime,
+        "flase_sale": false,
+        "Offers_cost": ""
       });
 
       final docid = ref.id;
@@ -307,5 +317,16 @@ class Operations {
       return istrue;
     }
     return istrue;
+  }
+
+  bool isTomorrow(Timestamp dateTime) {
+    final now = DateTime.now();
+    final tomorrow = DateTime(now.year, now.month, now.day + 1);
+
+    final givenDate = dateTime.toDate(); // Convert Timestamp to DateTime
+
+    return givenDate.year == tomorrow.year &&
+        givenDate.month == tomorrow.month &&
+        givenDate.day == tomorrow.day;
   }
 }

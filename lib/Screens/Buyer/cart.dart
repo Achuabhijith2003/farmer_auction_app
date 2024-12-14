@@ -176,7 +176,7 @@ class _CartState extends State<Cart> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) =>
-                                      ProductInfo(productId: cartProductId),
+                                      ProductInfo(productId: cartProductId,cost: productCost,),
                                 ),
                               );
                             },

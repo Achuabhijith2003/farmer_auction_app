@@ -12,6 +12,8 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   Firebasebuyer buyerservies = Firebasebuyer();
+  Operations _operations = Operations();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,10 +55,25 @@ class _HomeState extends State<Home> {
                 final cost = product['Cost'] ?? 0.0;
                 final imageUrl =
                     (product['images'] as List<dynamic>?)?.first ?? '';
+                final offercosts = product["Offers_cost"];
 
                 if (snapshot.hasData) {
                   for (var doc in snapshot.data!.docs) {
-                    print(doc.data()); // Print each product's data
+                    // print(doc.data()); // Print each product's data
+                    final productexpire = doc["Expire date"];
+                    int number = int.parse(cost);
+                    if (_operations.isTomorrow(productexpire)) {
+                      final offercost = number * (1 - (20 / 100));
+                      print(
+                          "Expire date product: $productexpire\nOffer cost:$offercost");
+                      FirebaseFirestore.instance
+                          .collection("products")
+                          .doc(doc.id)
+                          .update({
+                        "flase_sale": true,
+                        "Offers_cost": "$offercost"
+                      });
+                    } else {}
                   }
                 }
 
@@ -66,7 +83,9 @@ class _HomeState extends State<Home> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => ProductInfo(
-                            productId: product.id), // Pass productId
+                          productId: product.id,
+                          cost: offercosts,
+                        ), // Pass productId
                       ),
                     );
                   },

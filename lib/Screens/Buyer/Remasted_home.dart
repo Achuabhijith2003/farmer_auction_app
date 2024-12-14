@@ -1,6 +1,7 @@
 import 'package:farmer_auction_app/Screens/Buyer/Aution.dart';
 import 'package:farmer_auction_app/Screens/Buyer/Profile.dart';
 import 'package:farmer_auction_app/Screens/Buyer/cart.dart';
+import 'package:farmer_auction_app/Screens/Buyer/flaseSale.dart';
 import 'package:farmer_auction_app/Screens/Buyer/home.dart';
 import 'package:flutter/material.dart';
 
@@ -19,7 +20,13 @@ class _RemastedHomeState extends State<RemastedHome> {
 
   int _cureentindex = 0;
 
-  List<Widget> body = const [Home(), Aution(), Cart(), BuyerProfile()];
+  List<Widget> body = const [
+    Home(),
+    Aution(),
+    Flasesale(),
+    Cart(),
+    BuyerProfile()
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,6 +59,14 @@ class _RemastedHomeState extends State<RemastedHome> {
                     //         0xFF000000),
                   ),
                   label: "Aution"),
+              BottomNavigationBarItem(
+                  icon: Icon(
+                    Icons.local_offer_rounded,
+                    // color: Color(
+                    //     int.parse("#f5f3ef".substring(1, 7), radix: 16) +
+                    //         0xFF000000),
+                  ),
+                  label: "offer"),
               BottomNavigationBarItem(
                   icon: Icon(
                     Icons.shopping_bag,
