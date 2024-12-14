@@ -183,6 +183,7 @@ class _OdrderplaceState extends State<Odrderplace> {
                     // Display each item in the cart
                     ...cartItems.map((item) {
                       final productDocId = item['DocID'];
+                      final productcosts = item["Product_cost"];
 
                       return StreamBuilder<
                           DocumentSnapshot<Map<String, dynamic>>>(
@@ -204,7 +205,7 @@ class _OdrderplaceState extends State<Odrderplace> {
                           final productData = productSnapshot.data!.data()!;
                           productName = productData['name'] ?? 'No Name';
                           productCost = double.tryParse(
-                                  productData['Cost']?.toString() ?? '0') ??
+                                  productcosts?.toString() ?? '0') ??
                               0.0;
                           productid = productData["docID"];
 
@@ -231,7 +232,8 @@ class _OdrderplaceState extends State<Odrderplace> {
                           if (productDoc.exists) {
                             final productData = productDoc.data();
                             total += double.tryParse(
-                                    productData?['Cost']?.toString() ?? '0') ??
+                                    productData?['Offers_cost']?.toString() ??
+                                        '0') ??
                                 0.0;
                           }
                         }

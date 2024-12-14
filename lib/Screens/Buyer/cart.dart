@@ -36,38 +36,6 @@ class _CartState extends State<Cart> {
     }
   }
 
-  Future<void> placeOrder(
-      List<QueryDocumentSnapshot<Map<String, dynamic>>> cartItems) async {
-    try {
-      final orderData = cartItems.map((cartItem) => cartItem.data()).toList();
-      // Assuming you have an 'orders' collection
-      await _firestore.collection('orders').add({
-        'items': orderData,
-        'timestamp': FieldValue.serverTimestamp(),
-      });
-
-      // Clear the cart after placing the order
-      for (var cartItem in cartItems) {
-        await _firestore.collection('cart').doc(cartItem.id).delete();
-      }
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Order placed successfully!'),
-          backgroundColor: Colors.green,
-        ),
-      );
-    } catch (e) {
-      print('Error placing order: $e'); // Debug log
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Failed to place order.'),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     print('Cart page loaded.'); // Debug log
@@ -106,6 +74,7 @@ class _CartState extends State<Cart> {
                     final cartItem = cartItems[index].data();
                     final cartItemId = cartItems[index].id;
                     final cartProductId = cartItem['DocID'];
+                    final cartcost = cartItem["Product_cost"];
 
                     return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
                       stream:
@@ -128,7 +97,7 @@ class _CartState extends State<Cart> {
                         final productDoc = productSnapshot.data!.docs.first;
                         final product = productDoc.data();
                         final productName = product['name'] ?? 'No Name';
-                        final productCost = product['Cost'] ?? 0.0;
+                        final productCost = cartcost ?? 0.0;
                         final productImages =
                             (product['images'] as List<dynamic>?) ?? [];
                         final productImage =
@@ -175,8 +144,10 @@ class _CartState extends State<Cart> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) =>
-                                      ProductInfo(productId: cartProductId,cost: productCost,),
+                                  builder: (context) => ProductInfo(
+                                    productId: cartProductId,
+                                    cost: productCost,
+                                  ),
                                 ),
                               );
                             },
@@ -204,20 +175,6 @@ class _CartState extends State<Cart> {
                     builder: (context) => const Odrderplace(), // Pass productId
                   ),
                 );
-                // print('Placing order...'); // Debug log
-                // final cartSnapshot = await _firestore
-                //     .collection('cart')
-                //     .get(); // Fetch current cart
-                // if (cartSnapshot.docs.isNotEmpty) {
-                //   await placeOrder(cartSnapshot.docs);
-                // } else {
-                //   ScaffoldMessenger.of(context).showSnackBar(
-                //     const SnackBar(
-                //       content: Text('Cart is empty. Cannot place order.'),
-                //       backgroundColor: Colors.red,
-                //     ),
-                //   );
-                // }
               },
               child: const Text(
                 'Place Order',

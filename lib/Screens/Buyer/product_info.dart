@@ -18,7 +18,8 @@ class _ProductInfoState extends State<ProductInfo> {
     print('Adding product to cart: $productId'); // Debug log
 
     // Implementation for adding the product to the cart
-    final iscarted = await buyerServices.addtocarts(widget.productId);
+    final iscarted =
+        await buyerServices.addtocarts(widget.productId, widget.cost);
     if (iscarted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -72,7 +73,7 @@ class _ProductInfoState extends State<ProductInfo> {
           print('Fetched product data: $product'); // Debug log
 
           final name = product?['name'] ?? 'No Name';
-          final cost = product?['Cost'] ?? 0.0;
+          // final cost = product?['Cost'] ?? 0.0;
           final description =
               product?['description'] ?? 'No description available.';
           final images = (product?['images'] as List<dynamic>?) ?? [];
