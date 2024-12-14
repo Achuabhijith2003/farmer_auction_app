@@ -3,24 +3,24 @@ import 'onboarding_info.dart';
 class OnboardingItems {
   List<OnboardingInfo> items = [
     OnboardingInfo(
-        title: "Laboratory",
+        title: "📈 Empowering Farmers",
         descriptions:
-            "A scientist in his laboratory is not a mere technician: he is also a child confronting natural phenomena that impress him as though they were fairy tales.",
+            "Join thousands of farmers and buyers in a smart, fair, and profitable marketplace for fresh fruits, vegetables, and grains.",
         image: "assets/onboarding11.gif.png"),
     OnboardingInfo(
-        title: "Diagnosis",
+        title: "Sell Fresh, Earn More, \n Grow Together",
         descriptions:
-            "There is little you can do to stop a tornado, a hurricane, or a cancer diagnosis from changing your life in an instant.",
-        image: "assets/onboarding2.gif"),
+            "Join the fastest-growing marketplace for fresh fruits, vegetables, and grains.",
+        image: "assets/onboarding21.gif.png"),
     OnboardingInfo(
-        title: "Chronic Diseases",
+        title: "Get Paid Faster",
         descriptions:
-            "Cancer taught my family that my mom is much stronger than we ever thought.",
-        image: "assets/onboarding3.gif"),
+            "Instant payments with UPI, digital wallets, and secure bank transfers.",
+        image: "assets/onboarding3.1gif.png"),
     OnboardingInfo(
-        title: "Heart Diseases",
+        title: "Let’s Get Started!",
         descriptions:
-            "A healthy heart is a key to happiness in life so put a stop to all of the problems related to your heart before it stops you.",
-        image: "assets/onboarding4.gif"),
+            "Grow your business and profit. Join thousands of farmers today!",
+        image: "assets/onboarding41.gif.png"),
   ];
 }

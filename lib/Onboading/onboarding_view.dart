@@ -34,7 +34,10 @@ class _OnboardingViewState extends State<OnboardingView> {
                   TextButton(
                       onPressed: () => pageController
                           .jumpToPage(controller.items.length - 1),
-                      child: const Text("Skip")),
+                      child: const Text(
+                        "Skip",
+                        style: TextStyle(color: Colors.green),
+                      )),
 
                   //Indicator
                   SmoothPageIndicator(
@@ -46,7 +49,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                     effect: const WormEffect(
                       dotHeight: 12,
                       dotWidth: 12,
-                      activeDotColor: Color(0xFF7357a4),
+                      activeDotColor: Colors.green,
                     ),
                   ),
 
@@ -55,7 +58,8 @@ class _OnboardingViewState extends State<OnboardingView> {
                       onPressed: () => pageController.nextPage(
                           duration: const Duration(milliseconds: 600),
                           curve: Curves.easeIn),
-                      child: const Text("Next")),
+                      child: const Text("Next",
+                          style: TextStyle(color: Colors.green))),
                 ],
               ),
       ),
@@ -97,7 +101,7 @@ class _OnboardingViewState extends State<OnboardingView> {
   Widget getStarted() {
     return Container(
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8), color: const Color(0xFF7357a4)),
+          borderRadius: BorderRadius.circular(8), color: Colors.green),
       width: MediaQuery.of(context).size.width * .9,
       height: 55,
       child: TextButton(
