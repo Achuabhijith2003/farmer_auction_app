@@ -64,12 +64,7 @@ class _LoginpageState extends State<Loginpage> {
       resizeToAvoidBottomInset: false,
       body: Container(
         width: double.infinity,
-        decoration: BoxDecoration(
-            gradient: LinearGradient(begin: Alignment.topCenter, colors: [
-          Colors.grey.shade900,
-          Colors.grey.shade800,
-          Colors.grey.shade400
-        ])),
+        decoration: const BoxDecoration(color: Color(0xFF7357a4)),
         child: Padding(
           padding: const EdgeInsets.all(.0),
           child: Column(
@@ -217,7 +212,7 @@ class _LoginpageState extends State<Loginpage> {
                                           MainAxisAlignment.center,
                                       children: [
                                         CircularProgressIndicator(
-                                          color: Colors.grey,
+                                          color: Color(0xFF7357a4),
                                         ),
                                         SizedBox(
                                             height:
@@ -237,7 +232,7 @@ class _LoginpageState extends State<Loginpage> {
                               },
                               height: 50,
                               // margin: EdgeInsets.symmetric(horizontal: 50),
-                              color: Colors.grey[900],
+                              color: const Color(0xFF7357a4),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(50),
                               ),
@@ -386,6 +381,7 @@ class _LoginpageState extends State<Loginpage> {
           actions: [
             TextButton(
                 onPressed: () {
+                  Navigator.pop(context);
                   Navigator.pop(context);
                 },
                 child: const Text('Okay'))

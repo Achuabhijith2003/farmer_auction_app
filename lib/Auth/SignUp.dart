@@ -27,16 +27,7 @@ class _SignUpState extends State<SignUp> {
       resizeToAvoidBottomInset: true,
       body: Container(
         width: double.infinity,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            colors: [
-              Colors.grey.shade900,
-              Colors.grey.shade800,
-              Colors.grey.shade400
-            ],
-          ),
-        ),
+        decoration: const BoxDecoration(color: Color(0xFF7357a4)),
         child: Padding(
           padding: const EdgeInsets.all(0.0),
           child: Column(
@@ -61,7 +52,6 @@ class _SignUpState extends State<SignUp> {
               const SizedBox(height: 0),
               Expanded(
                 child: SingleChildScrollView(
-                  
                   child: Container(
                     decoration: const BoxDecoration(
                       color: Colors.white,
@@ -112,7 +102,7 @@ class _SignUpState extends State<SignUp> {
                               );
                             },
                             height: 50,
-                            color: Colors.grey[900],
+                            color: const Color(0xFF7357a4),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(50),
                             ),

@@ -3,7 +3,6 @@ import 'package:farmer_auction_app/Auth/loginpage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-
 class Recovery extends StatefulWidget {
   const Recovery({super.key});
 
@@ -19,12 +18,7 @@ class _RecoveryState extends State<Recovery> {
       resizeToAvoidBottomInset: false,
       body: Container(
         width: double.infinity,
-        decoration: BoxDecoration(
-            gradient: LinearGradient(begin: Alignment.topCenter, colors: [
-          Colors.grey.shade900,
-          Colors.grey.shade800,
-          Colors.grey.shade400
-        ])),
+        decoration: const BoxDecoration(color: Color(0xFF7357a4)),
         child: Padding(
           padding: const EdgeInsets.all(.0),
           child: Column(
@@ -112,7 +106,7 @@ class _RecoveryState extends State<Recovery> {
                               },
                               height: 50,
                               // margin: EdgeInsets.symmetric(horizontal: 50),
-                              color: Colors.grey[900],
+                              color: const Color(0xFF7357a4),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(50),
                               ),
