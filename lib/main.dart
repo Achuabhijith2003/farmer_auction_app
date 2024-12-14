@@ -8,7 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 void main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
   final prefs = await SharedPreferences.getInstance();
-  final onboarding = prefs.getBool("onboarding")??false;
+  final onboarding = prefs.getBool("onboarding") ?? false;
 
   print('Before Firebase initialization: ${Firebase.apps}');
   if (Firebase.apps.isEmpty) {
@@ -24,18 +24,19 @@ void main(List<String> args) async {
     print('Firebase App already initialized: ${Firebase.apps}');
   }
 
-  runApp( MyApp(onboarding: onboarding));
+  runApp(MyApp(onboarding: onboarding));
 }
 
 class MyApp extends StatelessWidget {
   final bool onboarding;
-  const MyApp({super.key, this.onboarding= false});
+  const MyApp({super.key, this.onboarding = false});
 
   @override
   Widget build(BuildContext context) {
-    return  MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: true,
-      home: onboarding? const Splash() : const OnboardingView(),
+      home: onboarding ? const Splash() : const OnboardingView(),
+      // home: const OnboardingView(),
     );
   }
 }

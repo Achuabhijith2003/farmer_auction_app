@@ -16,204 +16,184 @@ class _AutionState extends State<Aution> {
   Firebasebuyer buyyersevies = Firebasebuyer();
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 36, left: 5, right: 5),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  const SizedBox(width: 10),
-                  Text(
-                    "Aution",
-                    style: GoogleFonts.dmSerifDisplay(
-                        fontSize: 40, letterSpacing: 4),
-                    textAlign: TextAlign.center,
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Auctions',
+            style: GoogleFonts.aBeeZee(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 27)),
+        backgroundColor: Colors.green[700],
+      ),
+      body: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Ongoing Auctions',
+                    style: GoogleFonts.aBeeZee(
+                        color: Colors.green[900],
+                        fontWeight: FontWeight.bold,
+                        fontSize: 27)),
+                Expanded(
+                  child: StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection('auctions')
+                        .where('status', isEqualTo: 'ongoing')
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      if (snapshot.hasError) {
+                        return Text("Error: ${snapshot.error}");
+                      }
+                      final auctions = snapshot.data?.docs ?? [];
+                      if (auctions.isEmpty) {
+                        return Center(
+                          child: Text('No Ongoing Auctions',
+                              style: GoogleFonts.aBeeZee(
+                                  color: Colors.grey,
+                                  fontWeight: FontWeight.normal,
+                                  fontSize: 17)),
+                        );
+                      }
+                      return ListView.builder(
+                        itemCount: auctions.length,
+                        itemBuilder: (context, index) {
+                          final auction = auctions[index];
+                          final checktimedate =
+                              operations.checkDateandTime(auction["endTime"]);
+                          for (var i = 0; i < auctions.length; i++) {
+                            final auction = auctions[index];
+                            if (checktimedate) {
+                              buyyersevies.modifystatusAution(auction["docID"]);
+                              print(
+                                  "end Time :${auction["endTime"]}:$checktimedate");
+                            }
+                          }
+
+                          return Card(
+                            child: ListTile(
+                              // leading: Image.network(
+                              //   auction['imageUrl'],
+                              //   width: 60,
+                              //   height: 60,
+                              //   fit: BoxFit.cover,
+                              // ),
+                              title: Text(auction['productName']),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                      "Current Highest: ₹${auction['currentPrice']}"),
+                                  // Text("Bids: ${auction['totalBids']}"),
+                                  // Text(
+                                  //     "Ends In: ${auction['endtime']} mins"),
+                                ],
+                              ),
+                              trailing: Text("${auction["status"]}"),
+                              onTap: () => Navigator.push(
+                                  // ignore: use_build_context_synchronously
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => BiddingPlatform(
+                                      docID: auction["docID"],
+                                    ),
+                                  )),
+                            ),
+                          );
+                        },
+                      );
+                    },
                   ),
-                ],
-              ),
-            ),
-          ],
-        ),
-        Positioned(
-            top: 100,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 15),
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(40),
-                    topRight: Radius.circular(40)),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      "Ongoing Auctions:",
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-                    Expanded(
-                      child: StreamBuilder<QuerySnapshot>(
-                        stream: FirebaseFirestore.instance
-                            .collection('auctions')
-                            .where('status', isEqualTo: 'ongoing')
-                            .snapshots(),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return const Center(
-                                child: CircularProgressIndicator());
-                          }
-                          if (snapshot.hasError) {
-                            return Text("Error: ${snapshot.error}");
-                          }
-                          final auctions = snapshot.data?.docs ?? [];
-                          if (auctions.isEmpty) {
-                            return const Center(
-                                child: Text("No ongoing auctions."));
-                          }
-                          return ListView.builder(
-                            itemCount: auctions.length,
-                            itemBuilder: (context, index) {
-                              final auction = auctions[index];
-                              final checktimedate = operations
-                                  .checkDateandTime(auction["endTime"]);
-                              for (var i = 0; i < auctions.length; i++) {
-                                final auction = auctions[index];
-                                if (checktimedate) {
-                                  buyyersevies
-                                      .modifystatusAution(auction["docID"]);
-                                  print(
-                                      "end Time :${auction["endTime"]}:$checktimedate");
-                                }
-                              }
-
-                              return Card(
-                                child: ListTile(
-                                  // leading: Image.network(
-                                  //   auction['imageUrl'],
-                                  //   width: 60,
-                                  //   height: 60,
-                                  //   fit: BoxFit.cover,
-                                  // ),
-                                  title: Text(auction['productName']),
-                                  subtitle: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                          "Current Highest: ₹${auction['currentPrice']}"),
-                                      // Text("Bids: ${auction['totalBids']}"),
-                                      // Text(
-                                      //     "Ends In: ${auction['endtime']} mins"),
-                                    ],
-                                  ),
-                                  trailing: Text("${auction["status"]}"),
-                                  onTap: () => Navigator.push(
-                                      // ignore: use_build_context_synchronously
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => BiddingPlatform(
-                                          docID: auction["docID"],
-                                        ),
-                                      )),
-                                ),
-                              );
-                            },
-                          );
-                        },
-                      ),
-                    ),
-                    // Ended aution
-                    const Text(
-                      "End Auctions:",
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-                    Expanded(
-                      child: StreamBuilder<QuerySnapshot>(
-                        stream: FirebaseFirestore.instance
-                            .collection('auctions')
-                            .where('status', isEqualTo: 'end')
-                            .snapshots(),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return const Center(
-                                child: CircularProgressIndicator());
-                          }
-                          if (snapshot.hasError) {
-                            return Text("Error: ${snapshot.error}");
-                          }
-                          final auctions = snapshot.data?.docs ?? [];
-                          if (auctions.isEmpty) {
-                            return const Center(
-                                child: Text("No ongoing auctions."));
-                          }
-                          return ListView.builder(
-                            itemCount: auctions.length,
-                            itemBuilder: (context, index) {
-                              final auction = auctions[index];
-                              final checktimedate = operations
-                                  .checkDateandTime(auction["endTime"]);
-                              for (var i = 0; i < auctions.length; i++) {
-                                final auction = auctions[index];
-                                if (checktimedate) {
-                                  buyyersevies
-                                      .modifystatusAution(auction["docID"]);
-                                  print(
-                                      "end Time :${auction["endTime"]}:$checktimedate");
-                                }
-                              }
-
-                              return Card(
-                                child: ListTile(
-                                  // leading: Image.network(
-                                  //   auction['imageUrl'],
-                                  //   width: 60,
-                                  //   height: 60,
-                                  //   fit: BoxFit.cover,
-                                  // ),
-                                  title: Text(auction['productName']),
-                                  subtitle: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                          "Current Highest: ₹${auction['currentPrice']}"),
-                                      // Text("Bids: ${auction['totalBids']}"),
-                                      // Text(
-                                      //     "Ends In: ${auction['endtime']} mins"),
-                                    ],
-                                  ),
-                                  trailing: Text("${auction["status"]}"),
-                                  onTap: () => Navigator.push(
-                                      // ignore: use_build_context_synchronously
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => BiddingPlatform(
-                                          docID: auction["docID"],
-                                        ),
-                                      )),
-                                ),
-                              );
-                            },
-                          );
-                        },
-                      ),
-                    ),
-                  ],
                 ),
-              ),
-            ))
-      ],
+                // Ended aution
+                Text('Closed Auctions',
+                    style: GoogleFonts.aBeeZee(
+                        color: Colors.green[900],
+                        fontWeight: FontWeight.bold,
+                        fontSize: 27)),
+                Expanded(
+                  child: StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection('auctions')
+                        .where('status', isEqualTo: 'end')
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      if (snapshot.hasError) {
+                        return Text("Error: ${snapshot.error}");
+                      }
+                      final auctions = snapshot.data?.docs ?? [];
+                      if (auctions.isEmpty) {
+                        return Center(
+                          child: Text('No Closed Auctions',
+                              style: GoogleFonts.aBeeZee(
+                                  color: Colors.grey,
+                                  fontWeight: FontWeight.normal,
+                                  fontSize: 17)),
+                        );
+                      }
+                      return ListView.builder(
+                        itemCount: auctions.length,
+                        itemBuilder: (context, index) {
+                          final auction = auctions[index];
+                          final checktimedate =
+                              operations.checkDateandTime(auction["endTime"]);
+                          for (var i = 0; i < auctions.length; i++) {
+                            final auction = auctions[index];
+                            if (checktimedate) {
+                              buyyersevies.modifystatusAution(auction["docID"]);
+                              print(
+                                  "end Time :${auction["endTime"]}:$checktimedate");
+                            }
+                          }
+
+                          return Card(
+                            child: ListTile(
+                              // leading: Image.network(
+                              //   auction['imageUrl'],
+                              //   width: 60,
+                              //   height: 60,
+                              //   fit: BoxFit.cover,
+                              // ),
+                              title: Text(auction['productName']),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                      "Current Highest: ₹${auction['currentPrice']}"),
+                                  // Text("Bids: ${auction['totalBids']}"),
+                                  // Text(
+                                  //     "Ends In: ${auction['endtime']} mins"),
+                                ],
+                              ),
+                              trailing: Text("${auction["status"]}"),
+                              onTap: () => Navigator.push(
+                                  // ignore: use_build_context_synchronously
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => BiddingPlatform(
+                                      docID: auction["docID"],
+                                    ),
+                                  )),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

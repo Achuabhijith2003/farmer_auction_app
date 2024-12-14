@@ -221,9 +221,9 @@ class _AutionorderplaceState extends State<Autionorderplace> {
                         ),
                         const SizedBox(height: 10),
                         Text(
-                            'Starting Price: \$${startingPrice.toStringAsFixed(2)}'),
+                            'Starting Price: ₹${startingPrice.toStringAsFixed(2)}'),
                         Text(
-                            'Current Price: \$${currentPrice.toStringAsFixed(2)}'),
+                            'Current Price: ₹${currentPrice.toStringAsFixed(2)}'),
                         Text('End Time: ${endTime.toLocal()}'),
                         const SizedBox(height: 10),
                         const SizedBox(height: 10),
@@ -256,7 +256,7 @@ class _AutionorderplaceState extends State<Autionorderplace> {
                                 const SizedBox(height: 8),
                                 Text('Location: $userLocation'),
                                 Text('Payment Method: $selectedPaymentMethod '),
-                                Text("Total Amount: $finalamount"),
+                                Text("Total Amount:₹$finalamount"),
                                 const SizedBox(height: 16),
                                 ElevatedButton(
                                   onPressed: () {
@@ -293,7 +293,7 @@ class _AutionorderplaceState extends State<Autionorderplace> {
                                 const SizedBox(height: 8),
                                 Text('Location: $userLocation'),
                                 Text('Payment Method: $selectedPaymentMethod '),
-                                Text("Total Amount: $finalamount"),
+                                Text("Total Amount: ₹$finalamount"),
                                 const SizedBox(height: 16),
                                 ElevatedButton(
                                   onPressed: () async {

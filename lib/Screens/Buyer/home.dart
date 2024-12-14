@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:farmer_auction_app/Screens/Buyer/product_info.dart';
 import 'package:farmer_auction_app/Servies/firebase_servies.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -43,8 +44,12 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Home Page'),
-        backgroundColor: Colors.green,
+        title: Text('Home',
+            style: GoogleFonts.aBeeZee(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 27)),
+        backgroundColor: Colors.green[700],
       ),
       body: Column(
         children: [
@@ -58,7 +63,9 @@ class _HomeState extends State<Home> {
                   Icons.search_outlined,
                   color: Colors.grey,
                 ),
-                border: OutlineInputBorder(),
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                    borderSide: BorderSide(color: Colors.green)),
               ),
               onChanged: (val) {
                 setState(() {
@@ -139,10 +146,11 @@ class _HomeState extends State<Home> {
                           );
                         },
                         child: Card(
+                          borderOnForeground: false,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          elevation: 4,
+                          elevation: 5,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -185,7 +193,7 @@ class _HomeState extends State<Home> {
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
-                                      '\$$cost',
+                                      '₹ $cost',
                                       style: const TextStyle(
                                         fontSize: 14,
                                         color: Colors.green,

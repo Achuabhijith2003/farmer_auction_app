@@ -4,6 +4,7 @@ import 'package:farmer_auction_app/Screens/Buyer/cart.dart';
 import 'package:farmer_auction_app/Screens/Buyer/offersale.dart';
 import 'package:farmer_auction_app/Screens/Buyer/home.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class RemastedHome extends StatefulWidget {
   const RemastedHome({super.key});
@@ -36,12 +37,19 @@ class _RemastedHomeState extends State<RemastedHome> {
         children: [
           BottomNavigationBar(
             selectedFontSize: 20,
-            selectedItemColor: Colors.black,
+            selectedItemColor: Colors.white,
             enableFeedback: true,
-            backgroundColor: Color(
-                int.parse("#f5f3ef".substring(1, 7), radix: 16) + 0xFF000000),
+            backgroundColor: Colors.green[700],
             showUnselectedLabels: true,
             type: BottomNavigationBarType.fixed,
+            unselectedLabelStyle: GoogleFonts.aBeeZee(
+                color: Colors.green[900],
+                fontWeight: FontWeight.bold,
+                fontSize: 15),
+            selectedLabelStyle: GoogleFonts.aBeeZee(
+                color: Colors.green[900],
+                fontWeight: FontWeight.bold,
+                fontSize: 17),
             items: const [
               BottomNavigationBarItem(
                   icon: Icon(
@@ -52,32 +60,24 @@ class _RemastedHomeState extends State<RemastedHome> {
                   ),
                   label: "Home"),
               BottomNavigationBarItem(
-                  icon: Icon(
-                    Icons.groups_rounded,
-                    // color: Color(
-                    //     int.parse("#f5f3ef".substring(1, 7), radix: 16) +
-                    //         0xFF000000),
-                  ),
-                  label: "Aution"),
+                  icon: Icon(Icons.groups_outlined), label: "Aution"),
               BottomNavigationBarItem(
                   icon: Icon(
-                    Icons.local_offer_rounded,
+                    Icons.local_offer_outlined,
                     // color: Color(
                     //     int.parse("#f5f3ef".substring(1, 7), radix: 16) +
                     //         0xFF000000),
                   ),
                   label: "offer"),
               BottomNavigationBarItem(
-                  icon: Icon(
-                    Icons.shopping_bag,
-                    // color: Color(
-                    //     int.parse("#f5f3ef".substring(1, 7), radix: 16) +
-                    //         0xFF000000),
-                  ),
-                  label: "Cart"),
+                icon: Icon(
+                  Icons.shopping_bag_outlined,
+                ),
+                label: "Cart",
+              ),
               BottomNavigationBarItem(
                   icon: Icon(
-                    Icons.person_pin,
+                    Icons.person_pin_outlined,
                     // color: Color(
                     //     int.parse("#f5f3ef".substring(1, 7), radix: 16) +
                     //         0xFF000000),

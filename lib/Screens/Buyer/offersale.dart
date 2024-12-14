@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:farmer_auction_app/Screens/Buyer/product_info.dart';
 import 'package:farmer_auction_app/Servies/firebase_servies.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class Flasesale extends StatefulWidget {
   const Flasesale({super.key});
@@ -18,8 +19,12 @@ class _FlasesaleState extends State<Flasesale> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Limited Sale Offer"),
-        backgroundColor: Colors.green,
+        title: Text('Flash Sale',
+            style: GoogleFonts.aBeeZee(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 27)),
+        backgroundColor: Colors.green[700],
       ),
       body: Column(
         children: [
@@ -33,7 +38,9 @@ class _FlasesaleState extends State<Flasesale> {
                   Icons.search_outlined,
                   color: Colors.grey,
                 ),
-                border: OutlineInputBorder(),
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                    borderSide: BorderSide(color: Colors.green)),
               ),
               onChanged: (val) {
                 setState(() {

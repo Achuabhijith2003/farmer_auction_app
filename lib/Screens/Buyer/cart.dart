@@ -3,6 +3,7 @@ import 'package:farmer_auction_app/Screens/Buyer/odrderplace.dart';
 import 'package:farmer_auction_app/Servies/firebase_servies.dart';
 import 'package:flutter/material.dart';
 import 'package:farmer_auction_app/Screens/Buyer/product_info.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class Cart extends StatefulWidget {
   const Cart({super.key});
@@ -41,8 +42,12 @@ class _CartState extends State<Cart> {
     print('Cart page loaded.'); // Debug log
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Cart'),
-        backgroundColor: Colors.green,
+        title: Text('Cart',
+            style: GoogleFonts.aBeeZee(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 27)),
+        backgroundColor: Colors.green[700],
       ),
       body: Column(
         children: [
@@ -160,26 +165,29 @@ class _CartState extends State<Cart> {
               },
             ),
           ),
-          Container(
-            padding: const EdgeInsets.all(16.0),
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
-                padding: const EdgeInsets.symmetric(
-                    vertical: 16.0, horizontal: 24.0),
-              ),
-              onPressed: () async {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const Odrderplace(), // Pass productId
-                  ),
-                );
-              },
-              child: const Text(
-                'Place Order',
-                style: TextStyle(fontSize: 18),
-              ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  color: Colors.green[700]),
+              width: MediaQuery.of(context).size.width * .9,
+              height: 55,
+              child: TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            const Odrderplace(), // Pass productId
+                      ),
+                    );
+                  },
+                  child: Text("Place Order",
+                      style: GoogleFonts.aBeeZee(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18))),
             ),
           ),
         ],
