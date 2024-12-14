@@ -4,6 +4,8 @@ import 'package:farmer_auction_app/Servies/firebase_servies.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart'
+    as picker;
 import 'package:firebase_storage/firebase_storage.dart';
 
 class AddAuction extends StatefulWidget {
@@ -16,9 +18,10 @@ class AddAuction extends StatefulWidget {
 class _AddAuctionState extends State<AddAuction> {
   final TextEditingController productNameController = TextEditingController();
   final TextEditingController startingPriceController = TextEditingController();
-  final TextEditingController endTimeController = TextEditingController();
+
+  late DateTime dates;
   final List<File> selectedImages = [];
-  final picker = ImagePicker();
+  final Imagepicker = ImagePicker();
   Firebaseseller sellerbase = Firebaseseller();
 
   Future<void> pickImage() async {
@@ -28,7 +31,7 @@ class _AddAuctionState extends State<AddAuction> {
       );
       return;
     }
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    final pickedFile = await Imagepicker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() {
         selectedImages.add(File(pickedFile.path));
@@ -40,9 +43,8 @@ class _AddAuctionState extends State<AddAuction> {
     List<String> imageUrls = [];
     for (var i = 0; i < selectedImages.length; i++) {
       final file = selectedImages[i];
-      final ref = FirebaseStorage.instance
-          .ref()
-          .child('auctions/$docId/image_$i.jpg');
+      final ref =
+          FirebaseStorage.instance.ref().child('auctions/$docId/image_$i.jpg');
       await ref.putFile(file);
       final imageUrl = await ref.getDownloadURL();
       imageUrls.add(imageUrl);
@@ -53,8 +55,8 @@ class _AddAuctionState extends State<AddAuction> {
   void createAuction() async {
     String productName = productNameController.text.trim();
     double startingPrice = double.tryParse(startingPriceController.text) ?? 0.0;
-    DateTime endTime =
-        DateTime.tryParse(endTimeController.text) ?? DateTime.now();
+    DateTime endTime = dates;
+    // DateTime.tryParse(dates) ?? DateTime.now();
 
     if (productName.isEmpty ||
         startingPrice <= 0 ||
@@ -77,7 +79,7 @@ class _AddAuctionState extends State<AddAuction> {
         'productName': productName,
         'startingPrice': startingPrice,
         'currentPrice': startingPrice,
-        'Highest bidder uid':"",
+        'Highest bidder uid': "",
         'endTime': endTime,
         'sellerId': sellerbase.getuserID(), // Replace with actual seller ID
         'createdAt': DateTime.now(),
@@ -90,7 +92,10 @@ class _AddAuctionState extends State<AddAuction> {
       final imageUrls = await uploadImages(docId);
 
       // Update Firestore with image URLs
-      await FirebaseFirestore.instance.collection('auctions').doc(docId).update({
+      await FirebaseFirestore.instance
+          .collection('auctions')
+          .doc(docId)
+          .update({
         'docID': docId,
         'images': imageUrls,
       });
@@ -158,11 +163,23 @@ class _AddAuctionState extends State<AddAuction> {
                           const InputDecoration(labelText: 'Starting Price'),
                       keyboardType: TextInputType.number,
                     ),
-                    TextField(
-                      controller: endTimeController,
-                      decoration: const InputDecoration(
-                          labelText: 'End Time (yyyy-MM-dd HH:mm:ss)'),
-                    ),
+                    ElevatedButton(
+                        onPressed: () {
+                          picker.DatePicker.showDateTimePicker(context,
+                              showTitleActions: true,
+                              minTime: DateTime(2024, 5, 5, 20, 50),
+                              maxTime: DateTime(2030, 6, 7, 05, 09),
+                              onChanged: (date) {
+                            print('change $date in time zone ' +
+                                date.timeZoneOffset.inHours.toString());
+                          }, onConfirm: (date) {
+                            setState(() {
+                              dates = date;
+                            });
+                            print('confirm $date');
+                          }, currentTime: DateTime(2024, 12, 31, 23, 12, 34));
+                        },
+                        child: Text("Select Expire date and time")),
                     const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: pickImage,

@@ -49,6 +49,7 @@ dependencies:
   geolocator: ^13.0.2
   geocoding: ^3.0.0
   flutter_upi_india: ^0.0.6
+  flutter_datetime_picker_plus: ^2.2.0
   # upi_india: ^3.0.1
 
 dev_dependencies:

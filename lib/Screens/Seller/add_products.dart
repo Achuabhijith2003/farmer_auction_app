@@ -5,6 +5,8 @@ import 'package:farmer_auction_app/Servies/firebase_servies.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart'
+    as picker;
 
 class Addproducts extends StatefulWidget {
   const Addproducts({super.key});
@@ -104,6 +106,20 @@ class AddproductsState extends State<Addproducts> {
                           productcostcontroller, TextInputType.number),
                     ),
                     const SizedBox(height: 10),
+                    ElevatedButton(
+                        onPressed: () {
+                          picker.DatePicker.showDateTimePicker(context,
+                              showTitleActions: true,
+                              minTime: DateTime(2024, 5, 5, 20, 50),
+                              maxTime: DateTime(2030, 6, 7, 05, 09),
+                              onChanged: (date) {
+                            print('change $date in time zone ' +
+                                date.timeZoneOffset.inHours.toString());
+                          }, onConfirm: (date) {
+                            print('confirm $date');
+                          }, currentTime: DateTime(2024, 12, 31, 23, 12, 34));
+                        },
+                        child: Text("Select Expire date and time")),
 
                     // Image Picker Section
                     Padding(
@@ -191,11 +207,11 @@ class AddproductsState extends State<Addproducts> {
                                           'Please select at least 2 images for the product.')),
                                 );
                               } else {
-                                      const Center(
-                          child: CircularProgressIndicator(
-                            color: Colors.grey,
-                          ),
-                        ); 
+                                const Center(
+                                  child: CircularProgressIndicator(
+                                    color: Colors.grey,
+                                  ),
+                                );
                                 String productName =
                                     productnamecontroller.text.trim();
                                 String ProductDIscrption =
