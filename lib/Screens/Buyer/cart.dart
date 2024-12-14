@@ -1,3 +1,4 @@
+import 'package:another_flutter_splash_screen/splashs/fade_In_splash.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:farmer_auction_app/Screens/Buyer/odrderplace.dart';
 import 'package:farmer_auction_app/Servies/firebase_servies.dart';
@@ -34,6 +35,11 @@ class _CartState extends State<Cart> {
         ),
       );
     }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -106,6 +112,8 @@ class _CartState extends State<Cart> {
                             (product['images'] as List<dynamic>?) ?? [];
                         final productImage =
                             productImages.isNotEmpty ? productImages.first : '';
+                        final isoffer = product["flase_sale"];
+                        final orginalcost = product["Cost"];
 
                         return Card(
                           margin: const EdgeInsets.symmetric(
@@ -133,7 +141,9 @@ class _CartState extends State<Cart> {
                               style:
                                   const TextStyle(fontWeight: FontWeight.bold),
                             ),
-                            subtitle: Text('₹$productCost'),
+                            subtitle: (isoffer)
+                                ? Text('₹$productCost')
+                                : Text('₹$orginalcost'),
                             trailing: IconButton(
                               icon: const Icon(Icons.delete, color: Colors.red),
                               onPressed: () {

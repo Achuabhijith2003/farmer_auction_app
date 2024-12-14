@@ -141,7 +141,7 @@ class _HomeState extends State<Home> {
                       final cost = product['Cost'] ?? 0.0;
                       final imageUrl =
                           (product['images'] as List<dynamic>?)?.first ?? '';
-                      final offerCost = product["Offers_cost"] ?? cost;
+                      // final offerCost = product["Offers_cost"] ?? cost;
 
                       return GestureDetector(
                         onTap: () {
@@ -150,7 +150,7 @@ class _HomeState extends State<Home> {
                             MaterialPageRoute(
                               builder: (context) => ProductInfo(
                                 productId: product.id,
-                                cost: "$offerCost",
+                                cost: "",
                                 orginalcost: cost,
                               ),
                             ),

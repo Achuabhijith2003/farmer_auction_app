@@ -7,7 +7,11 @@ class ProductInfo extends StatefulWidget {
   final String productId;
   final String cost;
   final String orginalcost;
-  const ProductInfo({super.key, required this.productId, required this.cost, required this.orginalcost});
+  const ProductInfo(
+      {super.key,
+      required this.productId,
+      required this.cost,
+      required this.orginalcost});
 
   @override
   State<ProductInfo> createState() => _ProductInfoState();
@@ -18,10 +22,14 @@ class _ProductInfoState extends State<ProductInfo> {
 
   void addToCart(String productId) async {
     print('Adding product to cart: $productId'); // Debug log
+    bool isoffer = true;
+    if (widget.cost == "") {
+      isoffer = false;
+    }
 
     // Implementation for adding the product to the cart
-    final iscarted =
-        await buyerServices.addtocarts(widget.productId, widget.cost);
+    final iscarted = await buyerServices.addtocarts(
+        widget.productId, widget.cost, widget.orginalcost, isoffer);
     if (iscarted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(

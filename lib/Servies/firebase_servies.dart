@@ -89,11 +89,16 @@ class Firebasebuyer extends FirebaseauthServies {
   checkexpire(String productid, Timestamp productexpiretimedate) {}
 
   // add product to cart
-  Future<bool> addtocarts(String docId, String cost) async {
+  Future<bool> addtocarts(
+      String docId, String cost, String orginalCost, bool isoffer) async {
     try {
-      await FirebaseFirestore.instance
-          .collection("cart")
-          .add({"DocID": docId, "UserID": getuserID(), "Product_cost": cost});
+      await FirebaseFirestore.instance.collection("cart").add({
+        "DocID": docId,
+        "UserID": getuserID(),
+        "Product_cost": cost,
+        "OrginalCost": orginalCost,
+        "isoffer": isoffer
+      });
       return true;
     } catch (e) {
       print(e);
