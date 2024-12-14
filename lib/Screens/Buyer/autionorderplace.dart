@@ -21,7 +21,7 @@ class _AutionorderplaceState extends State<Autionorderplace> {
   String? selectedPaymentMethod;
   String userLocation = "Location not selected";
   bool isLoadingLocation = false;
-  late final Placemark place ;
+  late final Placemark place;
 
   double finalamount = 0.0;
   String productid = "";
@@ -63,7 +63,7 @@ class _AutionorderplaceState extends State<Autionorderplace> {
           await placemarkFromCoordinates(position.latitude, position.longitude);
 
       if (placemarks.isNotEmpty) {
-         place = placemarks.first;
+        place = placemarks.first;
         setState(() {
           userLocation =
               "${place.locality}, ${place.administrativeArea}, ${place.country}";
@@ -302,7 +302,8 @@ class _AutionorderplaceState extends State<Autionorderplace> {
                                             productid,
                                             productName,
                                             "$productCost",
-                                            "${place.locality}, ${place.administrativeArea}, ${place.country}",selectedPaymentMethod!);
+                                            "${place.locality}, ${place.administrativeArea}, ${place.country}",
+                                            selectedPaymentMethod!);
                                     if (isoderedcom) {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
