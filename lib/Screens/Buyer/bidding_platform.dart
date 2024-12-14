@@ -24,7 +24,8 @@ class _BiddingPlatformState extends State<BiddingPlatform> {
     super.initState();
   }
 
-  void placeBid(String auctionId, double currentPrice ,String higestbider) async {
+  void placeBid(
+      String auctionId, double currentPrice, String higestbider) async {
     double bidAmount = double.tryParse(bidController.text) ?? 0.0;
 
     if (bidAmount <= currentPrice) {
@@ -40,10 +41,8 @@ class _BiddingPlatformState extends State<BiddingPlatform> {
       await FirebaseFirestore.instance
           .collection('auctions')
           .doc(auctionId)
-          .update({
-        'currentPrice': bidAmount,
-        'Highest bidder uid':higestbider
-      });
+          .update(
+              {'currentPrice': bidAmount, 'Highest bidder uid': higestbider});
 
       await FirebaseFirestore.instance
           .collection('auctions')
@@ -70,11 +69,12 @@ class _BiddingPlatformState extends State<BiddingPlatform> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text(
-          'Bidding Platform',
-          style: GoogleFonts.dmSerifDisplay(fontSize: 24),
-        ),
-        backgroundColor: Colors.green,
+        title: Text('Bidding Platform',
+            style: GoogleFonts.aBeeZee(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 27)),
+        backgroundColor: Colors.green[700],
       ),
       body: Column(
         children: [
@@ -112,6 +112,7 @@ class _BiddingPlatformState extends State<BiddingPlatform> {
               }
 
               return Card(
+                elevation: 10,
                 margin: const EdgeInsets.all(8.0),
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
@@ -150,9 +151,9 @@ class _BiddingPlatformState extends State<BiddingPlatform> {
                       ),
                       const SizedBox(height: 10),
                       Text(
-                          'Starting Price: \$${startingPrice.toStringAsFixed(2)}'),
+                          'Starting Price: ₹${startingPrice.toStringAsFixed(2)}'),
                       Text(
-                          'Current Price: \$${currentPrice.toStringAsFixed(2)}'),
+                          'Current Price: ₹${currentPrice.toStringAsFixed(2)}'),
                       Text('End Time: ${endTime.toLocal()}'),
                       const SizedBox(height: 10),
                       TextField(
@@ -167,23 +168,50 @@ class _BiddingPlatformState extends State<BiddingPlatform> {
                       ),
                       const SizedBox(height: 10),
                       if (isautionend)
-                        ElevatedButton(
-                          onPressed: () => placeBid(widget.docID, currentPrice,buyyerservies.getuserID()),
-                          child: const Text('Place Bid'),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: Container(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15),
+                                color: Colors.green[700]),
+                            width: MediaQuery.of(context).size.width * .9,
+                            height: 55,
+                            child: TextButton(
+                                onPressed: () {
+                                  placeBid(widget.docID, currentPrice,
+                                      buyyerservies.getuserID());
+                                },
+                                child: Text("Place Bid",
+                                    style: GoogleFonts.aBeeZee(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18))),
+                          ),
                         )
                       else if (highestBidders == buyyerservies.getuserID())
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => Autionorderplace(
-                                  autionID: autionid,
-                                ), // Pass productId
-                              ),
-                            );
-                          },
-                          child: const Text('Pay Now'),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15),
+                                  color: Colors.green[700]),
+                              width: MediaQuery.of(context).size.width * .9,
+                              height: 55,
+                              child: TextButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              Autionorderplace(
+                                                  autionID: autionid),
+                                        ));
+                                  },
+                                  child: Text("Pay Now",
+                                      style: GoogleFonts.aBeeZee(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18)))),
                         )
                       else
                         const Text("Auction is over"),
@@ -235,12 +263,12 @@ class _BiddingPlatformState extends State<BiddingPlatform> {
                   final name = user['Name'] ?? 'N/A';
 
                   return Card(
-                    margin: const EdgeInsets.all(8.0),
+                    elevation: 5,
                     shape: Border.all(color: Colors.greenAccent),
                     child: ListTile(
                       title: Text('Highest Bidder: $name'),
                       subtitle:
-                          Text('Bid Amount: \$${bidAmount.toStringAsFixed(2)}'),
+                          Text('Bid Amount:₹${bidAmount.toStringAsFixed(2)}'),
                     ),
                   );
                 },
@@ -299,10 +327,11 @@ class _BiddingPlatformState extends State<BiddingPlatform> {
                         final name = user['Name'] ?? 'N/A';
 
                         return Card(
+                          elevation: 3,
                           child: ListTile(
                             title: Text('Bidder: $name'),
                             subtitle:
-                                Text('Bid Amount: \$${bidAmount.toString()}'),
+                                Text('Bid Amount: ₹${bidAmount.toString()}'),
                           ),
                         );
                       },

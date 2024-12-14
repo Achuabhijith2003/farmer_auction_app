@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:farmer_auction_app/Screens/Buyer/odrderplace.dart';
 import 'package:farmer_auction_app/Servies/firebase_servies.dart';
 import 'package:flutter/material.dart';
-import 'package:farmer_auction_app/Screens/Buyer/product_info.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class Cart extends StatefulWidget {

@@ -53,9 +53,19 @@ class _HomeState extends State<Home> {
       ),
       body: Column(
         children: [
-          const SizedBox(height: 20),
           Padding(
             padding: const EdgeInsets.all(8.0),
+            child: Image.asset(
+              "assets/home_background.jpg",
+            ),
+          ),
+          const SizedBox(height: 5),
+          Padding(
+            padding: const EdgeInsets.only(
+              top: 5,
+              left: 10,
+              right: 10,
+            ),
             child: TextField(
               decoration: const InputDecoration(
                 labelText: 'Search...',
