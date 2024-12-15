@@ -212,7 +212,7 @@ class _AddAuctionState extends State<AddAuction> {
                     height: 55,
                     child: TextButton(
                       onPressed: createAuction,
-                      child: Text("Add Images",
+                      child: Text("Create Auctions",
                           style: GoogleFonts.aBeeZee(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
