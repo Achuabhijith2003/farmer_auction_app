@@ -297,7 +297,7 @@ class _ProductInfoState extends State<ProductInfo> {
                           if (feedbackSnapshot.connectionState ==
                               ConnectionState.waiting) {
                             return const Center(
-                              child: CircularProgressIndicator(),
+                              child: CircularProgressIndicator(), 
                             );
                           }
 
