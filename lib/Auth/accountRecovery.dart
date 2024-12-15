@@ -18,7 +18,7 @@ class _RecoveryState extends State<Recovery> {
       resizeToAvoidBottomInset: false,
       body: Container(
         width: double.infinity,
-        decoration: const BoxDecoration(color: Color(0xFF7357a4)),
+        decoration: const BoxDecoration(color: Colors.green),
         child: Padding(
           padding: const EdgeInsets.all(.0),
           child: Column(
@@ -106,7 +106,7 @@ class _RecoveryState extends State<Recovery> {
                               },
                               height: 50,
                               // margin: EdgeInsets.symmetric(horizontal: 50),
-                              color: const Color(0xFF7357a4),
+                              color: Colors.green,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(50),
                               ),

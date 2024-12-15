@@ -64,7 +64,7 @@ class _LoginpageState extends State<Loginpage> {
       resizeToAvoidBottomInset: false,
       body: Container(
         width: double.infinity,
-        decoration: const BoxDecoration(color: Color(0xFF7357a4)),
+        decoration: const BoxDecoration(color: Colors.green),
         child: Padding(
           padding: const EdgeInsets.all(.0),
           child: Column(
@@ -212,7 +212,7 @@ class _LoginpageState extends State<Loginpage> {
                                           MainAxisAlignment.center,
                                       children: [
                                         CircularProgressIndicator(
-                                          color: Color(0xFF7357a4),
+                                          color: Colors.green,
                                         ),
                                         SizedBox(
                                             height:

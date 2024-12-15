@@ -27,7 +27,7 @@ class _SignUpState extends State<SignUp> {
       resizeToAvoidBottomInset: true,
       body: Container(
         width: double.infinity,
-        decoration: const BoxDecoration(color: Color(0xFF7357a4)),
+        decoration: const BoxDecoration(color: Colors.green),
         child: Padding(
           padding: const EdgeInsets.all(0.0),
           child: Column(
@@ -102,7 +102,7 @@ class _SignUpState extends State<SignUp> {
                               );
                             },
                             height: 50,
-                            color: const Color(0xFF7357a4),
+                            color: Colors.green,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(50),
                             ),
